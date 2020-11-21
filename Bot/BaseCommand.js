@@ -11,10 +11,17 @@ module.exports = class BaseCommand {
     this.args = args;
     this.client = Bot.client;
     this.db = Bot.db;
+    this.reactionEmote = "779800410168098816";
+
+    this.addWatchingReaction();
+  }
+
+  addWatchingReaction() {
+    this.message.react(this.reactionEmote);
   }
 
   async execute() {
-    console.log("Execute command");
+    console.log("Invalid command: " + this.message.content);
   }
 
   async reply(text, mention=false) {

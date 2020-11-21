@@ -12,12 +12,22 @@ class Bot {
     Bot.db = new Database();
     Bot.client = new Discord.Client();
     Bot.client.on("message", async function(message) {
-      if (Parser.isValidMessage(message)) {
-        const command = new Parser(message).parse()
-        return command.execute()
-      }
+      await Bot.readMessage(message);
     });
     await Bot.client.login(process.env.BOT_TOKEN);
+    await Bot.setStatus();
+
+    console.log("Bot is now watching.")
+  }
+
+  static async readMessage(message) {
+    if (Parser.isValidMessage(message)) {
+      const command = new Parser(message).parse()
+      return command.execute()
+    }
+  }
+
+  static async setStatus() {
     await Bot.client.user.setPresence({
         status: "online",
         activity: {
@@ -25,7 +35,6 @@ class Bot {
             type: "WATCHING",
         }
     });
-    console.log("Bot is now watching.")
   }
 }
 module.exports = Bot;
