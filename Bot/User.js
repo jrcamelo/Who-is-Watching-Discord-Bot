@@ -1,4 +1,4 @@
-const AniListNode = require("./ModifiedAniListNode/");
+const AniListNode = require("../ModifiedAniListNode/");
 const Discord = require("discord.js")
 const Bot = require("./Bot")
 

@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const { htmlToText } = require('html-to-text');
-const AniListNode = require("./ModifiedAniListNode/");
+const AniListNode = require("../ModifiedAniListNode/");
 const Bot = require("./Bot");
 
 const AniList = new AniListNode();

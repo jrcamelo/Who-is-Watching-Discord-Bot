@@ -4,13 +4,11 @@ const Parser = require("./Parser.js");
 const Database = require("./Database")
 
 class Bot {
-  static prefix = "w.";
   static db;
   static client;
 
   static async initialize() {
     console.log("Initializing bot...");
-    Bot.prefix = "w.";
     Bot.db = new Database();
     Bot.client = new Discord.Client();
     Bot.client.on("message", async function(message) {

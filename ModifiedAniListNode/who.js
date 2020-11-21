@@ -21,6 +21,8 @@ class Who {
         return this.util.send(`query ($users: [Int], $anime: Int) { Page (page: 1, perPage: 14) { Watching:mediaList (userId_in: $users, type: ANIME, mediaId: $anime) { user { name } progress score status updatedAt } } }`, { users: users, anime: anime });
     };
 
+
+    // TODO: Write Manga query
     /**
      * Fetch a manga entry by its AniList ID.
      * @param { Number } id - Required. The ID tied to the AniList entry.

@@ -25,6 +25,8 @@ class Media {
             siteUrl } }`, { search: search });
     };
 
+
+    // TODO: Write Manga query
     /**
      * Fetch a manga entry by its AniList ID.
      * @param { Number } id - Required. The ID tied to the AniList entry.
