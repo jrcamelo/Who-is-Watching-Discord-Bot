@@ -17,8 +17,17 @@ class Bot {
         return command.execute()
       }
     });
-    Bot.client.login(process.env.BOT_TOKEN);
+    await Bot.client.login(process.env.BOT_TOKEN);
+    await Bot.client.user.setPresence({
+        status: "online",
+        activity: {
+            name: "w.help",
+            type: "WATCHING",
+        }
+    });
     console.log("Bot is online!");
+        console.dir(Bot.client)
+
   }
 }
 module.exports = Bot;
