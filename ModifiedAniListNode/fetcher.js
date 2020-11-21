@@ -99,12 +99,7 @@ module.exports = {
       },
       body: JSON.stringify({ query: query, variables: variables })
     };
-    console.log(query);
-    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
-    console.log(variables);
-    console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
-    console.log(JSON.stringify({ query: query, variables: variables }))
-    console.log("CCCCCCCCCCCCCCCCCCCCCCCCC")
+    console.log(variables)
     if (this.key) { options.headers.Authorization = `Bearer ${this.key}`; }
     var response = await fetch("https://graphql.anilist.co", options);
     var json = await response.json();

@@ -1,7 +1,7 @@
-const BaseCommand = require("../BaseCommand.js");
-const Media = require("../Media");
+const BaseCommand = require("./Base.js");
+const Anime = require("../Anime");
 
-class Anime extends BaseCommand {
+class AnimeCommand extends BaseCommand {
   static command = "anime";
   static helpTitle = "Searches for an anime and shows users that are watching or have watched it.";
   static helpDescription = `${BaseCommand.prefix + this.command} <Anime title>`
@@ -16,12 +16,12 @@ class Anime extends BaseCommand {
     }
 
     const title = this.args.join(" ");
-    const anime = new Media(title, "ANIME");
+    const anime = new Anime(title);
     if (await anime.search() == null) {
       return this.reply("Something went wrong or no anime with that title was found!");
     }
-    const embed = await anime.makeAnimeEmbed();
+    const embed = await anime.makeEmbed();
     return this.reply(embed);    
   }
 }
-module.exports = Anime;
+module.exports = AnimeCommand;

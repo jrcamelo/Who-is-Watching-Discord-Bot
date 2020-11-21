@@ -1,7 +1,7 @@
-const BaseCommand = require("../BaseCommand.js");
+const BaseCommand = require("./Base.js");
 const User = require("../User");
 
-class List extends BaseCommand {
+class ListCommand extends BaseCommand {
   static command = "list";
   static helpTitle = "Shows a mentioned user's linked AniList account.";
   static helpDescription = `${BaseCommand.prefix + this.command} <@User>`
@@ -20,4 +20,4 @@ class List extends BaseCommand {
     return this.reply(embed);
   }  
 }
-module.exports = List;
+module.exports = ListCommand;

@@ -1,7 +1,7 @@
-const BaseCommand = require("../BaseCommand.js");
+const BaseCommand = require("./Base.js");
 const Discord = require("discord.js");
 
-class Help extends BaseCommand {
+class HelpCommand extends BaseCommand {
   static command = "help";
 
   constructor(message, args) {
@@ -37,4 +37,4 @@ class Help extends BaseCommand {
       .addFields(fields);
   }
 }
-module.exports = Help;
+module.exports = HelpCommand;

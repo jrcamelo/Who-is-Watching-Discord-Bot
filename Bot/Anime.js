@@ -11,84 +11,66 @@ const times = {
   YEARS: 60*60*24*365
 }
 
-const types = {
-  ANIME: "ANIME",
-  MANGA: "MANGA",
-}
-
-module.exports = class Media {
+module.exports = class Anime {
   constructor(title, type) {
     this.title = title;
-    this.type = type;
   }
 
   async search() {
-    switch(this.type) {
-      case types.ANIME:
-        return await this.setAnime();
-        break;
-      case types.MANGA:
-        return await this.setManga();
-        break;
-      default:
-        console.log("Wrong Media type");
-        break;
-    }
-
+    const anime = await AniList.media.anime(this.title);
+    if (anime == null) return null
+    this.anime = anime.Media;
+    return this.anime;
   }
 
-  async setAnime() {
-    const media = await AniList.media.anime(this.title);
-    if (media == null) return null
-    this.media = media.Media;
-    return this.media;
-  }
-
-  async setManga() {
-    return
-  }
-
-  async makeAnimeEmbed() {
+  async makeEmbed() {
     this.limitDescription()
     const embed = new Discord.MessageEmbed()
-      .setColor(this.media.coverImage.color || '#0099ff')
-      .setTitle(this.media.title.romaji)
-      .setURL(this.media.siteUrl)
-      .setDescription(this.media.description)
-      .setThumbnail(this.media.coverImage.large)
-      .setImage(this.media.bannerImage)
-      .addFields(this.makeAnimeAiredFields())
-    if (this.media.nextAiringEpisode) {
-      embed.addFields(this.makeAnimeAiringField());
+      .setColor(this.anime.coverImage.color || '#0099ff')
+      .setTitle(this.anime.title.romaji)
+      .setURL(this.anime.siteUrl)
+      .setDescription(this.anime.description)
+      .setImage(this.getBannerOrUseCover())
+      .setThumbnail(this.anime.coverImage.large)
+      .addFields(this.makeAiredFields())
+    if (this.anime.nextAiringEpisode) {
+      embed.addFields(this.makeAiringField());
     }
-    embed.addFields(await this.makeWatchingAnimeFields());
+    embed.addFields(await this.makeWatchingFields());
     return embed;
   }
 
   limitDescription() {
-    this.media.description = htmlToText(this.media.description, {wordwrap: 500})
-    if (this.media.description.length > 500) {
-      this.media.description = this.media.description.substring(0, 500) + "...";
+    this.anime.description = htmlToText(this.anime.description, {wordwrap: 500})
+    if (this.anime.description.length > 500) {
+      this.anime.description = this.anime.description.substring(0, 500) + "...";
     }
   }
 
-  makeAnimeAiredFields() {
+  getBannerOrUseCover() {
+    if (this.anime.bannerImage != null) return this.anime.bannerImage;
+    this.anime.bannerImage = this.anime.coverImage.large;
+    this.anime.coverImage.large = null;
+    return this.anime.bannerImage;
+  }
+
+  makeAiredFields() {
     return [
-        { name: this.media.format, value: this.media.episodes.toString() + ' episode(s)', inline: true },
-        { name: 'Aired at', value: this.media.season + " " + this.media.seasonYear, inline: true }
+        { name: this.anime.format, value: this.anime.episodes.toString() + ' episode(s)', inline: true },
+        { name: 'Aired at', value: this.anime.season + " " + this.anime.seasonYear, inline: true }
     ]
   }
 
-  makeAnimeAiringField() {
-    const nextEpisode = this.media.nextAiringEpisode.episode.toString()
-    const timeLeft = Math.ceil(this.media.nextAiringEpisode.timeUntilAiring/times.HOURS)
+  makeAiringField() {
+    const nextEpisode = this.anime.nextAiringEpisode.episode.toString()
+    const timeLeft = Math.ceil(this.anime.nextAiringEpisode.timeUntilAiring/times.HOURS)
     return [
         { name: 'Next episode: ' + nextEpisode, value: 'Time left: ' + timeLeft + " hour(s)", inline: true}
     ];
   }
 
-  async makeWatchingAnimeFields() {
-    const usersWatching = await this.whoIsWatchingAnime();
+  async makeWatchingFields() {
+    const usersWatching = await this.whoIsWatching();
 
     let countWatching = 0;
     let countDone = 0;
@@ -130,9 +112,9 @@ module.exports = class Media {
     return fields;
   }
   
-  async whoIsWatchingAnime() {
+  async whoIsWatching() {
     const users = await Bot.db.getUserIds();
-    const result = await AniList.who.watchingAnime(users, this.media.id);
+    const result = await AniList.who.watchingAnime(users, this.anime.id);
     if (!result) return null
     return result.Page.Watching
   }

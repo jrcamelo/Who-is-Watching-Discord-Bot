@@ -1,4 +1,4 @@
-const Bot = require("./Bot");
+const Bot = require("../Bot");
 
 module.exports = class BaseCommand {
   static prefix = "w.";

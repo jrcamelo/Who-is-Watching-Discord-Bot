@@ -18,11 +18,55 @@ class Media {
     anime(search) {
         if (!search) { throw new Error("Anime is not provided!"); }
 
-        return this.util.send(`query ($search: String) { Media (search: $search, type: ANIME) { id idMal title { romaji english native userPreferred } 
-            format episodes description startDate { year month day } endDate { year month day }
-            season seasonYear duration countryOfOrigin coverImage { large:extraLarge color }
-            bannerImage genres synonyms averageScore meanScore nextAiringEpisode { timeUntilAiring airingAt episode } airingSchedule { nodes { airingAt timeUntilAiring episode } } 
-            siteUrl } }`, { search: search });
+        return this.util.send(`query ($search: String) { 
+          Media (search: $search, type: ANIME) { 
+            id 
+            idMal 
+            title { 
+              romaji 
+              english 
+            } 
+            format 
+            episodes 
+            description 
+            startDate { 
+              year 
+              month 
+              day 
+            } 
+            endDate { 
+              year 
+              month 
+              day 
+            }
+            season 
+            seasonYear 
+            duration 
+            countryOfOrigin 
+            coverImage { 
+              large:extraLarge 
+              color 
+            }
+            bannerImage 
+            genres 
+            synonyms 
+            averageScore 
+            meanScore 
+            nextAiringEpisode { 
+              timeUntilAiring 
+              airingAt 
+              episode 
+            } 
+            airingSchedule { 
+              nodes { 
+                airingAt 
+                timeUntilAiring 
+                episode 
+              }
+            } 
+            siteUrl 
+            } }`, 
+            { search: search });
     };
 
 
@@ -35,8 +79,40 @@ class Media {
      */
     manga(search) {
         if (!search) { throw new Error("Manga is not provided!"); }
-        return this.util.send(`query ($search: String) { Media (search: $search, type: MANGA) { id idMal title { romaji english native userPreferred }
-            description format status startDate { year month day } endDate { year month day } chapters volumes coverImage { large:extraLarge color } bannerImage genres synonyms averageScore meanScore siteUrl } }`, { search: search });
+        return this.util.send(`query ($search: String) { 
+          Media (search: $search, type: MANGA) { 
+            id 
+            idMal 
+            title { 
+              romaji 
+              english 
+            }
+            description 
+            format 
+            status 
+            startDate { 
+              year 
+              month 
+              day 
+            } 
+            endDate { 
+              year 
+              month 
+              day 
+            } 
+            chapters 
+            volumes 
+            coverImage { 
+              large:extraLarge 
+              color 
+            } 
+            bannerImage 
+            genres 
+            synonyms 
+            averageScore 
+            meanScore 
+            siteUrl 
+            } }`, { search: search });
     };
 };
 

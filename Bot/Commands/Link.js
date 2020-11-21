@@ -1,7 +1,7 @@
-const BaseCommand = require("../BaseCommand.js");
+const BaseCommand = require("./Base.js");
 const User = require("../User");
 
-class Link extends BaseCommand {
+class LinkCommand extends BaseCommand {
   static command = "link";
   static helpTitle = "Link your Discord account to an AniList account.";
   static helpDescription = `${BaseCommand.prefix + this.command} <Your AniList username>`
@@ -27,4 +27,4 @@ class Link extends BaseCommand {
     return this.reply(embed);
   }  
 }
-module.exports = Link;
+module.exports = LinkCommand;
