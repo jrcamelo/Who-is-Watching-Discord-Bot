@@ -1,0 +1,20 @@
+{
+  "name": "CavernousHardtofindSpyware",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@replit/database": "^2.0.0",
+    "anilist-node": "^1.6.0",
+    "discord.js": "^12.4.1",
+    "dotenv": "^8.2.0",
+    "html-to-text": "^6.0.0",
+    "node-fetch": "^2.6.1"
+  }
+}
