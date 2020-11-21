@@ -25,9 +25,7 @@ class Bot {
             type: "WATCHING",
         }
     });
-    console.log("Bot is online!");
-        console.dir(Bot.client)
-
+    console.log("Bot is now watching.")
   }
 }
 module.exports = Bot;
