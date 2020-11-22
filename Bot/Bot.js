@@ -21,9 +21,13 @@ class Bot {
   }
 
   static async readMessage(message) {
-    if (Parser.isValidMessage(message)) {
-      const command = new Parser(message).parse()
-      return command.execute()
+    try {
+      if (Parser.isValidMessage(message)) {
+        const command = new Parser(message).parse();
+        if (command) return command.tryExecute();
+      }
+    } catch(e) {
+      console.log(e);
     }
   }
 
@@ -35,6 +39,11 @@ class Bot {
             type: "WATCHING",
         }
     });
+  }
+
+  static getProfilePicture() {
+    const url = "https://cdn.discordapp.com/avatars/"
+    return url + Bot.client.user + "/" + Bot.client.user.avatar + ".png";
   }
 }
 module.exports = Bot;

@@ -20,6 +20,16 @@ module.exports = class BaseCommand {
     this.message.react(this.reactionEmote);
   }
 
+  async tryExecute() {
+    try {
+      await this.execute();
+    } catch(e) {
+      console.log("\n" + this.message.content + " caused an error at " + new Date())
+      console.log(e);
+      console.log("\n")
+    }
+  }
+
   async execute() {
     console.log("Invalid command: " + this.message.content);
   }
