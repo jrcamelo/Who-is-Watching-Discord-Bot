@@ -23,16 +23,18 @@ module.exports = class Manga {
     return this.manga;
   }
 
-  async makeEmbed() {
+  async makeEmbed(compact = false) {
     // this.limitDescription()
     const embed = new Discord.MessageEmbed()
       .setColor(this.manga.coverImage.color || '#0099ff')
       .setTitle(this.manga.title.romaji)
       .setURL(this.manga.siteUrl)
-      .setImage(this.manga.bannerImage)
       .setThumbnail(this.manga.coverImage.large)
       .addFields(this.makeReleasedFields())
       .addFields(await this.makeReadingFields());
+    if (!compact) {
+      embed.setImage(this.manga.bannerImage)
+    }
     return embed;
   }
 
@@ -50,13 +52,17 @@ module.exports = class Manga {
         : `${this.manga.status}`;
     fields.push({ name: this.manga.format, value: chaptersOrStatus, inline: true })
 
+    let startDate = "Unknown"
     const start = this.manga.startDate;
-    fields.push({ name: "Start date", value: `${start.year}-${start.month}-${start.day}`, inline: true});
+    if (start.year != null && start.month != null && start.day != null) {
+      startDate = `${start.year}-${start.month}-${start.day}`
+    }
+    fields.push({ name: "Start date", value: startDate, inline: true});
 
     let endDate = "Unknown"
     const end = this.manga.endDate;
     if (end.year != null && end.month != null && end.day != null) {
-      endDate = "${end.year}-${end.month}-${end.day}"
+      endDate = `${end.year}-${end.month}-${end.day}`
     }
     fields.push({ name: "End date", value: endDate, inline: true});
 

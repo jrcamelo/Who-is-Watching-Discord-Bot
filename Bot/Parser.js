@@ -16,7 +16,9 @@ class Parser {
     const Me = require("./Commands/Me");
     const List = require("./Commands/List");
     const Anime = require("./Commands/Anime");
+    const AnimeCompact = require("./Commands/AnimeCompact");
     const Manga = require("./Commands/Manga");
+    const MangaCompact = require("./Commands/MangaCompact");
     const Watching = require("./Commands/Watching");
     const commands = [Link, Me, List, Anime, Manga, Watching];
 
@@ -38,8 +40,14 @@ class Parser {
       case Anime.command:
         return new Anime(this.message, this.args);
         break;
+      case AnimeCompact.command:
+        return new AnimeCompact(this.message, this.args);
+        break;
       case Manga.command:
         return new Manga(this.message, this.args);
+        break;
+      case MangaCompact.command:
+        return new MangaCompact(this.message, this.args);
         break;
       case Watching.command:
         return new Watching(this.message);

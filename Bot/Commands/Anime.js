@@ -4,10 +4,11 @@ const Anime = require("../Anime");
 class AnimeCommand extends BaseCommand {
   static command = "anime";
   static helpTitle = "Searches for an anime and shows users that are watching or have watched it.";
-  static helpDescription = `${BaseCommand.prefix + this.command} <Anime title>`
+  static helpDescription = `${BaseCommand.prefix + this.command} <Anime title>`  
 
   constructor(message, args) {
     super(message, args);
+    this.compact = false;
   }
 
   async execute() {
@@ -20,7 +21,7 @@ class AnimeCommand extends BaseCommand {
     if (await anime.search() == null) {
       return this.reply("Something went wrong or no anime with that title was found!");
     }
-    const embed = await anime.makeEmbed();
+    const embed = await anime.makeEmbed(this.compact);
     return this.reply(embed);    
   }
 }

@@ -8,6 +8,7 @@ class MangaCommand extends BaseCommand {
 
   constructor(message, args) {
     super(message, args);
+    this.compact = false;
   }
 
   async execute() {
@@ -20,7 +21,7 @@ class MangaCommand extends BaseCommand {
     if (await manga.search() == null) {
       return this.reply("Something went wrong or no manga with that title was found!");
     }
-    const embed = await manga.makeEmbed();
+    const embed = await manga.makeEmbed(this.compact);
     return this.reply(embed);    
   }
 }

@@ -23,18 +23,19 @@ module.exports = class Anime {
     return this.anime;
   }
 
-  async makeEmbed() {
+  async makeEmbed(compact=false) {
     // this.limitDescription()
     const embed = new Discord.MessageEmbed()
       .setColor(this.anime.coverImage.color || '#0099ff')
       .setTitle(this.anime.title.romaji)
       .setURL(this.anime.siteUrl)
-      .setImage(this.anime.bannerImage)
       .setThumbnail(this.anime.coverImage.large)
-      .addFields(this.makeAiredFields())
-      .addFields(this.makeAiringOrCompletedFields());
-
-    embed.addFields(await this.makeWatchingFields());
+    if (!compact) {
+      embed.addFields(this.makeAiredFields())
+        .setImage(this.anime.bannerImage);
+    }
+    embed.addFields(this.makeAiringOrCompletedFields(!compact))
+      .addFields(await this.makeWatchingFields());
     return embed;
   }
 
@@ -53,16 +54,16 @@ module.exports = class Anime {
     return fields;
   }
 
-  makeAiringOrCompletedFields() {
+  makeAiringOrCompletedFields(inline = true) {
     if (this.anime.nextAiringEpisode) {
       const nextEpisode = this.anime.nextAiringEpisode.episode.toString()
       const timeLeft = Math.ceil(this.anime.nextAiringEpisode.timeUntilAiring/times.HOURS)
       return [
-          { name: 'Next episode: ' + nextEpisode, value: 'Time left: ' + timeLeft + " hour(s)", inline: true}
+          { name: 'Next episode: ' + nextEpisode, value: 'Time left: ' + timeLeft + " hour(s)", inline: inline}
       ];
     } else {
       return [
-          { name: this.anime.status, value: "No airing episodes", inline: true}
+          { name: this.anime.status, value: "No airing episodes", inline: inline}
       ];
     }
   }
