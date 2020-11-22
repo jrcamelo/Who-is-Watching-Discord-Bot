@@ -1,6 +1,7 @@
 const User = require("./user"),
     media = require("./media"),
     who = require("./who"),
+    watching = require("./watching"),
     util = require("./utilities");
 
 /**
@@ -29,6 +30,11 @@ class AniList {
          * @Member { Who }
          */
         this.who = new who(this.__util);
+
+        /**
+         * @Member { Watching }
+         */
+        this.watching = new watching(this.__util);
         
         /**
          * @Member { Media }

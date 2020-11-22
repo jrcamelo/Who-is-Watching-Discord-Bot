@@ -17,7 +17,8 @@ class Parser {
     const List = require("./Commands/List");
     const Anime = require("./Commands/Anime");
     const Manga = require("./Commands/Manga");
-    const commands = [Link, Me, List, Anime, Manga];
+    const Watching = require("./Commands/Watching");
+    const commands = [Link, Me, List, Anime, Manga, Watching];
 
     this.separateCommandAndArgs();
 
@@ -40,13 +41,13 @@ class Parser {
       case Manga.command:
         return new Manga(this.message, this.args);
         break;
+      case Watching.command:
+        return new Watching(this.message);
+        break;
       default:
         break;
     }
   }
-
-  // Add a w.airing command
-  // https://anilist.co/graphiql?query=%7B%0A%0A%20%20Page(page%3A1%2C%20perPage%3A10)%7B%0A%20%20%20%20media(seasonYear%3A%202020%2C%20season%3AFALL%2C%20sort%3A%20SCORE_DESC%2C%20status%3A%20RELEASING)%20%7B%20%20%20%20%20%20%0A%20%20%20%20%20%20nextAiringEpisode%20%7B%0A%20%20%20%20%20%20%20%20episode%0A%20%20%20%20%20%20%20%20timeUntilAiring%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20title%20%7B%0A%20%20%20%20%20%20%20%20romaji%0A%20%20%20%20%20%20%7D%20%20%20%20%20%20%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A%0A
 
   separateCommandAndArgs() {
     const commandBody = this.removePrefix();
