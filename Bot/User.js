@@ -46,7 +46,6 @@ module.exports = class User {
       .setColor(this.getAniListProfileColor())
       .setTitle(this.anilist.name)
       .setURL(this.anilist.siteUrl)
-      .setDescription(this.anilist.about || "AniList user")
       .setThumbnail(this.anilist.avatar.large)
       .setImage(this.anilist.bannerImage)
       .addFields(this.makeStatisticsFields())
@@ -78,6 +77,7 @@ module.exports = class User {
   getAniListFavorite(type) {
     if (this.anilist.favourites == null) return null;
     if (this.anilist.favourites[type] == null) return null;
+    if (this.anilist.favourites[type].nodes[0] == null) return null;
     return this.anilist.favourites[type].nodes[0].title.romaji;
   }
 

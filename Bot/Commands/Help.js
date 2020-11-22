@@ -32,9 +32,9 @@ class HelpCommand extends BaseCommand {
     return new Discord.MessageEmbed()
       .setColor("#26edff")
       .setAuthor("How to use the bot", Bot.getProfilePicture())
-      .setDescription("Bot made to help keep track of Who is watching/reading What.\n" +
+      .setDescription("Bot made to help keep track of Who? is watching or reading what.\n" +
                       "Link your AniList profile and help your friends in their weeb journey.\n" +
-                      "And remember, Who? is always watching.")
+                      "You can [export your MAL](https://myanimelist.net/panel.php?go=export), [make an AniList](https://anilist.co/signup) and [import everything](https://anilist.co/settings/import).\n\n")
       .setThumbnail("https://i.imgur.com/smjjRie.png")
       .setFooter("by jrlol3", "https://cdn.discordapp.com/avatars/464911746088304650/b4cf2c3e345edcfe9b329611ccce509b.png")
       .addFields(fields);

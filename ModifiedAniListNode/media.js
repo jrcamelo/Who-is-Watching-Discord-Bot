@@ -29,6 +29,7 @@ class Media {
             format 
             episodes 
             description 
+            status
             startDate { 
               year 
               month 

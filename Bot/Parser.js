@@ -48,6 +48,11 @@ class Parser {
         break;
     }
   }
+  
+  async isUserMod() {
+    const member = await this.message.guild.member(this.message.author);
+    if (member) return await member.hasPermission("MANAGE_MESSAGES");
+  }
 
   separateCommandAndArgs() {
     const commandBody = this.removePrefix();

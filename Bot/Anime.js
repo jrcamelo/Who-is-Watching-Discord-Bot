@@ -24,18 +24,16 @@ module.exports = class Anime {
   }
 
   async makeEmbed() {
-    this.limitDescription()
+    // this.limitDescription()
     const embed = new Discord.MessageEmbed()
       .setColor(this.anime.coverImage.color || '#0099ff')
       .setTitle(this.anime.title.romaji)
       .setURL(this.anime.siteUrl)
-      .setDescription(this.anime.description)
-      .setImage(this.getBannerOrUseCover())
+      .setImage(this.anime.bannerImage)
       .setThumbnail(this.anime.coverImage.large)
       .addFields(this.makeAiredFields())
-    if (this.anime.nextAiringEpisode) {
-      embed.addFields(this.makeAiringField());
-    }
+      .addFields(this.makeAiringOrCompletedFields());
+
     embed.addFields(await this.makeWatchingFields());
     return embed;
   }
@@ -47,40 +45,37 @@ module.exports = class Anime {
     }
   }
 
-  getBannerOrUseCover() {
-    if (this.anime.bannerImage != null) return this.anime.bannerImage;
-    this.anime.bannerImage = this.anime.coverImage.large;
-    this.anime.coverImage.large = null;
-    return this.anime.bannerImage;
-  }
-
   makeAiredFields() {
-    return [
+    const fields = [
         { name: this.anime.format, value: this.anime.episodes.toString() + ' episode(s)', inline: true },
         { name: 'Aired at', value: this.anime.season + " " + this.anime.seasonYear, inline: true }
     ]
+    return fields;
   }
 
-  makeAiringField() {
-    const nextEpisode = this.anime.nextAiringEpisode.episode.toString()
-    const timeLeft = Math.ceil(this.anime.nextAiringEpisode.timeUntilAiring/times.HOURS)
-    return [
-        { name: 'Next episode: ' + nextEpisode, value: 'Time left: ' + timeLeft + " hour(s)", inline: true}
-    ];
+  makeAiringOrCompletedFields() {
+    if (this.anime.nextAiringEpisode) {
+      const nextEpisode = this.anime.nextAiringEpisode.episode.toString()
+      const timeLeft = Math.ceil(this.anime.nextAiringEpisode.timeUntilAiring/times.HOURS)
+      return [
+          { name: 'Next episode: ' + nextEpisode, value: 'Time left: ' + timeLeft + " hour(s)", inline: true}
+      ];
+    } else {
+      return [
+          { name: this.anime.status, value: "No airing episodes", inline: true}
+      ];
+    }
   }
 
   async makeWatchingFields() {
-    const usersWatching = await this.whoIsWatching();
-
-    let countWatching = 0;
-    let countDone = 0;
+    const usersWatching = await this.sortedWhoIsWatching();
+    
     const fields = []
     while(usersWatching.length > 0) {
       const watching = usersWatching.pop()
       const updateTime = this.parseUpdateTime(watching.updatedAt);
       switch(watching.status) {
         case "CURRENT":
-          countWatching += 1;
           fields.push({ 
               name: watching.user.name + " - Watching", 
               value: "Episode " + watching.progress + updateTime, 
@@ -88,7 +83,6 @@ module.exports = class Anime {
           });
           break
         case "COMPLETED":
-          countDone += 1;
           fields.push({ 
               name: watching.user.name + " - Completed", 
               value: "Score: " + watching.score + updateTime, 
@@ -104,11 +98,6 @@ module.exports = class Anime {
           break;
       }
     }
-    fields.unshift({
-        name: "Watching: " + countWatching,
-        value: "Completed: " + countDone,
-        inline: false
-    });
     return fields;
   }
   
@@ -117,6 +106,18 @@ module.exports = class Anime {
     const result = await AniList.who.watchingAnime(users, this.anime.id);
     if (!result) return null
     return result.Page.Watching
+  }
+
+  async sortedWhoIsWatching() {
+    const usersWatching = await this.whoIsWatching();
+    usersWatching.sort(function(a, b) {
+      if (a.progress > b.progress) return 1;
+      if (b.progress > a.progress) return -1;
+      if (a.updatedAt > b.updatedAt) return 1;
+      if (b.updatedAt > a.updatedAt) return -1;
+      return 0;
+    });
+    return usersWatching;
   }
 
   parseUpdateTime(updated) {

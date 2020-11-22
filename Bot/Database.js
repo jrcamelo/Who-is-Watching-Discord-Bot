@@ -25,4 +25,8 @@ module.exports = class Database {
     }
     return ids;
   }
+
+  async getGuildChannelList(guildId, prefix="GUILD_") {
+    return await this.db.get(prefix + guild);
+  }
 }

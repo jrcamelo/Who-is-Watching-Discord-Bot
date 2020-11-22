@@ -12,7 +12,7 @@ class LinkCommand extends BaseCommand {
 
   async execute() {
     if (!this.args.length) {
-      return this.reply("Add your AniList username after the command\n" + Link.helpDescription)
+      return this.reply("Add your AniList username after the command\n" + LinkCommand.helpDescription)
     }
 
     const user = new User();

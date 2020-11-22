@@ -24,13 +24,12 @@ module.exports = class Manga {
   }
 
   async makeEmbed() {
-    this.limitDescription()
+    // this.limitDescription()
     const embed = new Discord.MessageEmbed()
       .setColor(this.manga.coverImage.color || '#0099ff')
       .setTitle(this.manga.title.romaji)
       .setURL(this.manga.siteUrl)
-      .setDescription(this.manga.description)
-      .setImage(this.getBannerOrUseCover())
+      .setImage(this.manga.bannerImage)
       .setThumbnail(this.manga.coverImage.large)
       .addFields(this.makeReleasedFields())
       .addFields(await this.makeReadingFields());
@@ -43,13 +42,6 @@ module.exports = class Manga {
       this.manga.description = this.manga.description.substring(0, 500) + "...";
     }
   }
-  
-  getBannerOrUseCover() {
-    if (this.manga.bannerImage != null) return this.manga.bannerImage;
-    this.manga.bannerImage = this.manga.coverImage.large;
-    this.manga.coverImage.large = null;
-    return this.manga.bannerImage;
-  }
 
   makeReleasedFields() {
     const fields = []
@@ -61,25 +53,24 @@ module.exports = class Manga {
     const start = this.manga.startDate;
     fields.push({ name: "Start date", value: `${start.year}-${start.month}-${start.day}`, inline: true});
 
+    let endDate = "Unknown"
     const end = this.manga.endDate;
     if (end.year != null && end.month != null && end.day != null) {
-      fields.push({ name: "End date", value: `${end.year}-${end.month}-${end.day}`, inline: true});
+      endDate = "${end.year}-${end.month}-${end.day}"
     }
+    fields.push({ name: "End date", value: endDate, inline: true});
+
     return fields;
   }
 
   async makeReadingFields() {
-    const usersReading = await this.whoIsReading();
-
-    let countReading = 0;
-    let countDone = 0;
+    const usersReading = await this.sortedWhoIsReading();
     const fields = []
     while(usersReading.length > 0) {
       const reading = usersReading.pop()
       const updateTime = this.parseUpdateTime(reading.updatedAt);
       switch(reading.status) {
         case "CURRENT":
-          countReading += 1;
           fields.push({ 
               name: reading.user.name + " - Reading", 
               value: "Chapter " + reading.progress + updateTime, 
@@ -87,7 +78,6 @@ module.exports = class Manga {
           });
           break
         case "COMPLETED":
-          countDone += 1;
           fields.push({ 
               name: reading.user.name + " - Completed", 
               value: "Score: " + reading.score + updateTime, 
@@ -103,11 +93,6 @@ module.exports = class Manga {
           break;
       }
     }
-    fields.unshift({
-        name: "Reading: " + countReading,
-        value: "Completed: " + countDone,
-        inline: false
-    });
     return fields;
   }
   
@@ -116,6 +101,18 @@ module.exports = class Manga {
     const result = await AniList.who.readingManga(users, this.manga.id);
     if (!result) return null
     return result.Page.Reading
+  }
+
+  async sortedWhoIsReading() {
+    const usersReading = await this.whoIsReading();
+    usersReading.sort(function(a, b) {
+      if (a.progress > b.progress) return 1;
+      if (b.progress > a.progress) return -1;
+      if (a.updatedAt > b.updatedAt) return 1;
+      if (b.updatedAt > a.updatedAt) return -1;
+      return 0;
+    });
+    return usersReading;
   }
 
   parseUpdateTime(updated) {
