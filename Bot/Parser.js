@@ -22,7 +22,7 @@ class Parser {
 
     this.separateCommandAndArgs();
 
-    switch(this.command) {
+    switch(this.command.toLowerCase()) {
       case Help.command:
         return new Help(this.message, commands);
         break;
