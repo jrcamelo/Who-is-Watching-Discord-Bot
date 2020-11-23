@@ -78,21 +78,21 @@ module.exports = class Manga {
         case "CURRENT":
           fields.push({ 
               name: reading.user.name + " - Reading", 
-              value: "Chapter " + reading.progress + updateTime, 
+              value: `Chapter ${reading.progress} ${updateTime}`, 
               inline: true 
           });
           break
         case "COMPLETED":
           fields.push({ 
               name: reading.user.name + " - Completed", 
-              value: "Score: " + reading.score || "?" + updateTime, 
+              value: `Score: ${+watching.score || "-"} ${updateTime}`, 
               inline: true 
           });
           break;
         default:
           fields.push({ 
               name: reading.user.name + " - " + reading.status, 
-              value: "Chapter " + reading.progress + updateTime, 
+              value: `Chapter ${reading.progress} ${updateTime}`, 
               inline: true 
           });
           break;

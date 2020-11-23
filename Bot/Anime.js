@@ -100,7 +100,7 @@ module.exports = class Anime {
         case "CURRENT":
           fields.push({ 
               name: watching.user.name + " - Watching", 
-              value: "Episode " + watching.progress + updateTime, 
+              value: `Episode ${watching.progress} ${updateTime}`, 
               inline: true 
           });
           break
@@ -110,14 +110,14 @@ module.exports = class Anime {
             : "";
           fields.push({ 
               name: watching.user.name + " - Completed " + repeat, 
-              value: "Score: " + watching.score || "-" + updateTime, 
+              value: `Score: ${+watching.score || "-"} ${updateTime}`, 
               inline: true 
           });
           break;
         default:
           fields.push({ 
               name: watching.user.name + " - " + watching.status, 
-              value: "Episode " + watching.progress + updateTime, 
+              value: `Episode ${watching.progress} ${updateTime}`, 
               inline: true 
           });
           break;
