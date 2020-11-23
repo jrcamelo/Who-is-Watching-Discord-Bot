@@ -17,9 +17,23 @@ module.exports = class Manga {
   }
 
   async search() {
-    const manga = await AniList.media.manga(this.title);
-    if (manga == null) return null
-    this.manga = manga.Media;
+    const manga = await AniList.media.pageManga(this.title);
+    if (manga == null || !manga.Page.media) return null
+    this.searchResult = manga.Page.media;
+    this.index = 0;
+    this.manga = this.searchResult[this.index];
+    return this.manga;
+  }
+  
+  nextSearchResult() {
+    this.index = (this.index + 1) % this.searchResult.length;
+    this.manga = this.searchResult[this.index];
+    return this.manga;
+  }
+
+  previousSearchResult() {
+    this.index = (this.index + 1) % this.searchResult.length;
+    this.manga = this.searchResult[this.index];
     return this.manga;
   }
 

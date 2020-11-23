@@ -58,20 +58,61 @@ class Media {
               airingAt 
               episode 
             } 
-            airingSchedule { 
-              nodes { 
-                airingAt 
-                timeUntilAiring 
-                episode 
-              }
-            } 
             siteUrl 
             } }`, 
             { search: search });
     };
 
+    pageAnime(search, page=1) {
+        if (!search) { throw new Error("Anime is not provided!"); }
 
-    // TODO: Write Manga query
+        return this.util.send(`query ($search: String, $page: Int) {
+          Page (page: $page, perPage: 10) {
+            media (search: $search, type: ANIME) { 
+              id 
+              idMal 
+              title { 
+                romaji 
+                english 
+              } 
+              format 
+              episodes 
+              description 
+              status
+              startDate { 
+                year 
+                month 
+                day 
+              } 
+              endDate { 
+                year 
+                month 
+                day 
+              }
+              season 
+              seasonYear 
+              duration 
+              countryOfOrigin 
+              coverImage { 
+                large:extraLarge 
+                color 
+              }
+              bannerImage 
+              genres 
+              synonyms 
+              averageScore 
+              meanScore 
+              nextAiringEpisode { 
+                timeUntilAiring 
+                airingAt 
+                episode 
+              } 
+              siteUrl 
+            } } }`, 
+            { search: search, page: page });
+    };
+
+
     /**
      * Fetch a manga entry by its AniList ID.
      * @param { Number } id - Required. The ID tied to the AniList entry.
@@ -114,6 +155,46 @@ class Media {
             meanScore 
             siteUrl 
             } }`, { search: search });
+    };
+
+
+    pageManga(search, page=1) {
+        if (!search) { throw new Error("Manga is not provided!"); }
+        return this.util.send(`query ($search: String, $page: Int) {
+          Page (page: $page, perPage: 10) {
+            media (search: $search, type: MANGA) { 
+              id 
+              idMal 
+              title { 
+                romaji 
+                english 
+              }
+              description 
+              format 
+              status 
+              startDate { 
+                year 
+                month 
+                day 
+              } 
+              endDate { 
+                year 
+                month 
+                day 
+              } 
+              chapters 
+              volumes 
+              coverImage { 
+                large:extraLarge 
+                color 
+              } 
+              bannerImage 
+              genres 
+              synonyms 
+              averageScore 
+              meanScore 
+              siteUrl 
+            } } }`, { search: search, page: page });
     };
 };
 

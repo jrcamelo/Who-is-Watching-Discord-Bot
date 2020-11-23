@@ -7,6 +7,10 @@ class BaseCommand {
   static helpTitle = "BaseCommand";
   static helpDescription = "Command to be extended";
 
+  static deleteReactionEmoji = "❌";
+  static previousReactionEmoji = "⬅️";
+  static nextReactionEmoji = "➡️";
+
 
   constructor(message, args) {
     this.message = message;
@@ -18,7 +22,7 @@ class BaseCommand {
     this.addWatchingReactionToMessage();
 
     this.reactions = {
-      "❌": this.deleteReply,      
+      [BaseCommand.deleteReactionEmoji]: this.deleteReply,      
     }
     this.reactionFilter = (reaction, user) => {
       console.log(reaction.emoji.name);
@@ -48,12 +52,12 @@ class BaseCommand {
     const options = { max: 1, time: 60000, errors: ['time'] };
     this.reply.awaitReactions(this.reactionFilter, options)
       .then(collected => {
-          this.reactions[collected.first().emoji](collected.first()); 
+          this.reactions[collected.first().emoji](collected.first(), this); 
         })
       .catch(collected => {});
   }
 
-  async deleteReply(collected) {
+  async deleteReply(collected, _command) {
     collected.message.delete();
   }
 

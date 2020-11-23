@@ -7,8 +7,8 @@ class MangaCompactCommand extends MangaCommand {
     super(message, args);
   }
 
-  async getMangaEmbed(manga) {
-    return manga.makeEmbedCompact();
+  async getMangaEmbed() {
+    return this.manga.makeEmbedCompact();
   }
 }
 module.exports = MangaCompactCommand;

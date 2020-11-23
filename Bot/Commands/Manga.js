@@ -17,16 +17,43 @@ class MangaCommand extends BaseCommand {
     }
 
     const title = this.args.join(" ");
-    const manga = new Manga(title);
-    if (await manga.search() == null) {
+    this.manga = new Manga(title);
+    if (await this.manga.search() == null) {
       return this.reply("Something went wrong or no manga with that title was found!");
     }
-    const embed = await this.getMangaEmbed(manga);
-    return this.reply(embed);    
+    const embed = await this.getMangaEmbed();
+    this.botMessage = await this.reply(embed);
+
+    if (this.manga.searchResult.length > 1) {
+      await this.addPreviousAndNextReactions();
+    }
   }
 
-  async getMangaEmbed(manga) {
-    return manga.makeEmbed();
+  async addPreviousAndNextReactions() {
+    await this.botMessage.react(BaseCommand.previousReactionEmoji);
+    await this.botMessage.react(BaseCommand.nextReactionEmoji);
+    this.reactions[BaseCommand.previousReactionEmoji] = this.previousManga;
+    this.reactions[BaseCommand.nextReactionEmoji] = this.nextManga;
+  }
+
+  async previousManga(_collected, command) {
+    if (!command.manga.nextSearchResult()) return;
+    await command.refreshManga();
+  }
+
+  async nextManga(_collected, command) {
+    if (!command.manga.nextSearchResult()) return;
+    await command.refreshManga();
+  }
+
+  async refreshManga() {
+    const embed = await this.getMangaEmbed(this.manga);
+    await this.botMessage.edit(embed);
+    await this.waitReplyReaction();
+  }
+
+  async getMangaEmbed() {
+    return this.manga.makeEmbed();
   }
 }
 module.exports = MangaCommand;

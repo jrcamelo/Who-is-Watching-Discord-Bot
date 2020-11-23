@@ -7,8 +7,8 @@ class AnimeCompactCommand extends AnimeCommand {
     super(message, args);
   }
   
-  async getAnimeEmbed(anime) {
-    return anime.makeEmbedCompact();
+  async getAnimeEmbed() {
+    return this.anime.makeEmbedCompact();
   }
 }
 module.exports = AnimeCompactCommand;

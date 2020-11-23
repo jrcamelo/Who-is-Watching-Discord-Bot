@@ -18,9 +18,23 @@ module.exports = class Anime {
   }
 
   async search() {
-    const anime = await AniList.media.anime(this.title);
-    if (anime == null) return null
-    this.anime = anime.Media;
+    const anime = await AniList.media.pageAnime(this.title);
+    if (anime == null || !anime.Page.media) return null
+    this.searchResult = anime.Page.media;
+    this.index = 0;
+    this.anime = this.searchResult[this.index];
+    return this.anime;
+  }
+
+  nextSearchResult() {
+    this.index = (this.index + 1) % this.searchResult.length;
+    this.anime = this.searchResult[this.index];
+    return this.anime; 
+  }
+
+  previousSearchResult() {
+    this.index = (this.index + 1) % this.searchResult.length;
+    this.anime = this.searchResult[this.index];
     return this.anime;
   }
 
