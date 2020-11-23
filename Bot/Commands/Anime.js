@@ -21,8 +21,12 @@ class AnimeCommand extends BaseCommand {
     if (await anime.search() == null) {
       return this.reply("Something went wrong or no anime with that title was found!");
     }
-    const embed = await anime.makeEmbed(this.compact);
+    const embed = await this.getAnimeEmbed(anime);
     return this.reply(embed);    
+  }
+
+  async getAnimeEmbed(anime) {
+    return anime.makeEmbed();
   }
 }
 module.exports = AnimeCommand;

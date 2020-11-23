@@ -1,7 +1,8 @@
 const Discord = require('discord.js');
 const { htmlToText } = require('html-to-text');
-const AniListNode = require("../ModifiedAniListNode/");
+
 const Bot = require("./Bot");
+const AniListNode = require("../ModifiedAniListNode/");
 
 const AniList = new AniListNode();
 
@@ -23,18 +24,27 @@ module.exports = class Anime {
     return this.anime;
   }
 
-  async makeEmbed(compact=false) {
-    // this.limitDescription()
+  async makeEmbed() {
+    let embed = new Discord.MessageEmbed()
+      .setColor(this.anime.coverImage.color || '#0099ff')
+      .setTitle(this.anime.title.romaji)
+      .setURL(this.anime.siteUrl)
+      .setThumbnail(this.anime.coverImage.large)
+      .setImage(this.anime.bannerImage)
+      .addFields(this.makeAiredFields())
+      .addFields(this.makeAiringOrCompletedFields())
+      .addFields(await this.makeWatchingFields());
+    embed = this.addTriviaFooter(embed);
+    return embed;
+  }
+
+  async makeEmbedCompact() {
     const embed = new Discord.MessageEmbed()
       .setColor(this.anime.coverImage.color || '#0099ff')
       .setTitle(this.anime.title.romaji)
       .setURL(this.anime.siteUrl)
       .setThumbnail(this.anime.coverImage.large)
-    if (!compact) {
-      embed.addFields(this.makeAiredFields())
-        .setImage(this.anime.bannerImage);
-    }
-    embed.addFields(this.makeAiringOrCompletedFields(!compact))
+      .setFooter(this.makeAiringOrCompletedFooter(), Bot.getProfilePicture())
       .addFields(await this.makeWatchingFields());
     return embed;
   }
@@ -68,6 +78,17 @@ module.exports = class Anime {
     }
   }
 
+  makeAiringOrCompletedFooter() {
+    if (this.anime.nextAiringEpisode) {
+      const nextEpisode = this.anime.nextAiringEpisode.episode.toString()
+      const timeLeft = Math.ceil(this.anime.nextAiringEpisode.timeUntilAiring/times.HOURS)
+      return `Episode ${nextEpisode} in ${timeLeft} hour(s)`;
+    }
+    else {
+      return `${this.anime.status}`;
+    }
+  }
+
   async makeWatchingFields() {
     const usersWatching = await this.sortedWhoIsWatching();
     
@@ -84,9 +105,12 @@ module.exports = class Anime {
           });
           break
         case "COMPLETED":
+          const repeat = watching.repeat ?
+            ` (${watching.repeat + 1}x)`
+            : "";
           fields.push({ 
-              name: watching.user.name + " - Completed", 
-              value: "Score: " + watching.score + updateTime, 
+              name: watching.user.name + " - Completed " + repeat, 
+              value: "Score: " + watching.score || "-" + updateTime, 
               inline: true 
           });
           break;
@@ -100,6 +124,18 @@ module.exports = class Anime {
       }
     }
     return fields;
+  }
+
+  addTriviaFooter(embed) {
+    const roll = Math.random();
+    if (roll > 0.99) {
+      embed.setFooter("Megumin is best girl!", Bot.getOwnerPicture())
+    } else if (roll < 0.1) {
+      embed.setFooter("Try w.a for a compact version of this command.", Bot.getProfilePicture())
+    } else if (roll < 0.2) {
+      embed.setFooter("Add a ❌ reaction to delete any bot message.", Bot.getProfilePicture());
+    }
+    return embed;
   }
   
   async whoIsWatching() {
@@ -116,6 +152,8 @@ module.exports = class Anime {
       if (b.progress > a.progress) return -1;
       if (a.updatedAt > b.updatedAt) return 1;
       if (b.updatedAt > a.updatedAt) return -1;
+      if (a.score > b.score) return 1;
+      if (b.score > a.score) return -1;
       return 0;
     });
     return usersWatching;

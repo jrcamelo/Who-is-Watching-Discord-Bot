@@ -24,7 +24,6 @@ module.exports = class Manga {
   }
 
   async makeEmbed(compact = false) {
-    // this.limitDescription()
     const embed = new Discord.MessageEmbed()
       .setColor(this.manga.coverImage.color || '#0099ff')
       .setTitle(this.manga.title.romaji)
@@ -86,7 +85,7 @@ module.exports = class Manga {
         case "COMPLETED":
           fields.push({ 
               name: reading.user.name + " - Completed", 
-              value: "Score: " + reading.score + updateTime, 
+              value: "Score: " + reading.score || "?" + updateTime, 
               inline: true 
           });
           break;
@@ -116,6 +115,8 @@ module.exports = class Manga {
       if (b.progress > a.progress) return -1;
       if (a.updatedAt > b.updatedAt) return 1;
       if (b.updatedAt > a.updatedAt) return -1;
+      if (a.score > b.score) return 1;
+      if (b.score > a.score) return -1;
       return 0;
     });
     return usersReading;

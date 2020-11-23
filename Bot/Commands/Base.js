@@ -1,22 +1,31 @@
 const Bot = require("../Bot");
 
-module.exports = class BaseCommand {
+class BaseCommand {
   static prefix = "w.";
   static command = "Command to be used";
   static helpTitle = "BaseCommand";
   static helpDescription = "Command to be extended";
+
 
   constructor(message, args) {
     this.message = message;
     this.args = args;
     this.client = Bot.client;
     this.db = Bot.db;
-    this.reactionEmote = "779800410168098816";
 
-    this.addWatchingReaction();
+    this.reactionEmote = "779800410168098816";
+    this.addWatchingReactionToMessage();
+
+    this.reactions = {
+      "❌": this.deleteReply,      
+    }
+    this.reactionFilter = (reaction, user) => {
+      console.log(reaction.emoji.name);
+      return this.reactions[reaction.emoji.name] != null;
+    };
   }
 
-  addWatchingReaction() {
+  addWatchingReactionToMessage() {
     this.message.react(this.reactionEmote);
   }
 
@@ -34,11 +43,25 @@ module.exports = class BaseCommand {
     console.log("Invalid command: " + this.message.content);
   }
 
-  async reply(text, mention=false) {
-    if (mention) {
-      return this.message.reply(text)
-    }
-    return this.message.channel.send(text)
+  async waitReplyReaction() {
+    const options = { max: 1, time: 30000, errors: ['time'] };
+    this.reply.awaitReactions(this.reactionFilter, options)
+      .then(collected => {
+          this.reactions[collected.first().emoji](collected.first()); 
+        })
+      .catch(collected => {});
   }
 
+  async deleteReply(collected) {
+    collected.message.delete();
+  }
+
+  async reply(text, mention=false) {
+    this.reply = mention ?
+      await this.message.reply(text)
+      : await this.message.channel.send(text)
+    await this.waitReplyReaction();
+    return this.reply;    
+  }
 }
+module.exports = BaseCommand;

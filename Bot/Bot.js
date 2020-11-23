@@ -12,7 +12,7 @@ class Bot {
     Bot.db = new Database();
     Bot.client = new Discord.Client();
     Bot.client.on("message", async function(message) {
-      await Bot.readMessage(message);
+      Bot.readMessage(message);
     });
     await Bot.client.login(process.env.BOT_TOKEN);
     await Bot.setStatus();
@@ -44,6 +44,10 @@ class Bot {
   static getProfilePicture() {
     const url = "https://cdn.discordapp.com/avatars/"
     return url + Bot.client.user + "/" + Bot.client.user.avatar + ".png";
+  }
+
+  static getOwnerPicture() {
+    return "https://cdn.discordapp.com/avatars/464911746088304650/b4cf2c3e345edcfe9b329611ccce509b.png"
   }
 }
 module.exports = Bot;

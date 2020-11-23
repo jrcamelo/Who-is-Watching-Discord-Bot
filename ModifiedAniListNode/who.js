@@ -32,6 +32,7 @@ class Who {
               score 
               status 
               updatedAt 
+              repeat
             } } }`, { users: users, anime: anime });
     };
 
