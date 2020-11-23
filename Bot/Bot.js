@@ -1,11 +1,14 @@
 require('dotenv').config()
 const Discord = require("discord.js");
 const Parser = require("./Parser.js");
-const Database = require("./Database")
+const Database = require("./Database");
+const { Timer } = require("./Timer");
 
 class Bot {
   static db;
   static client;
+  static timer;
+  static lastValidChannel;
 
   static async initialize() {
     console.log("Initializing bot...");
@@ -17,18 +20,8 @@ class Bot {
     await Bot.client.login(process.env.BOT_TOKEN);
     await Bot.setStatus();
 
-    console.log("Bot is now watching.")
-  }
-
-  static async readMessage(message) {
-    try {
-      if (Parser.isValidMessage(message)) {
-        const command = new Parser(message).parse();
-        if (command) return command.tryExecute();
-      }
-    } catch(e) {
-      console.log(e);
-    }
+    Bot.timer = new Timer(360000000, function() {});
+    console.log("Bot is now watching.");
   }
 
   static async setStatus() {
@@ -41,6 +34,38 @@ class Bot {
     });
   }
 
+  static async readMessage(message) {
+    try {
+      if (Parser.isValidMessage(message)) {
+        await Bot.updateTimer(message);       
+        const command = new Parser(message).parse();
+        if (command) {
+          Bot.lastValidChannel = message.channel;
+          return command.tryExecute();
+        }
+      }
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
+  static updateTimer(message) {
+    if (message.author.username != "jrlol3" || message.author.bot) return;
+    if (Bot.timer == null || Bot.timer.timer == null) {
+      Bot.timer = new Timer(
+        3600000, 
+        function(channel) { Bot.reminder(channel) }, 
+        Bot.lastValidChannel || message.channel);
+    } else {
+      Bot.timer.setTime(3600000);
+      Bot.timer.setArgs(Bot.lastValidChannel || message.channel);
+    }
+  }
+
+  static reminder(channel) {
+    channel.send("1 hour has passed since the last message from jrlol3. Is he alright?");
+  }
+
   static getProfilePicture() {
     const url = "https://cdn.discordapp.com/avatars/"
     return url + Bot.client.user + "/" + Bot.client.user.avatar + ".png";
@@ -49,5 +74,6 @@ class Bot {
   static getOwnerPicture() {
     return "https://cdn.discordapp.com/avatars/464911746088304650/b4cf2c3e345edcfe9b329611ccce509b.png"
   }
+
 }
 module.exports = Bot;
