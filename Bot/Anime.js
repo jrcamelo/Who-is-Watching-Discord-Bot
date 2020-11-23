@@ -69,7 +69,7 @@ module.exports = class Anime {
       const nextEpisode = this.anime.nextAiringEpisode.episode.toString()
       const timeLeft = Math.ceil(this.anime.nextAiringEpisode.timeUntilAiring/times.HOURS)
       return [
-          { name: 'Next episode: ' + nextEpisode, value: 'Time left: ' + timeLeft + " hour(s)", inline: inline}
+          { name: 'Next episode: ' + nextEpisode, value: `${timeLeft} hour(s) left`, inline: inline}
       ];
     } else {
       return [
@@ -100,7 +100,7 @@ module.exports = class Anime {
         case "CURRENT":
           fields.push({ 
               name: watching.user.name + " - Watching", 
-              value: `Episode ${watching.progress} ${updateTime}`, 
+              value: `Ep. ${watching.progress} ${updateTime}`, 
               inline: true 
           });
           break
@@ -110,14 +110,14 @@ module.exports = class Anime {
             : "";
           fields.push({ 
               name: watching.user.name + " - Completed " + repeat, 
-              value: `Score: ${+watching.score || "-"} ${updateTime}`, 
+              value: `${+watching.score || "-"}/10 ${updateTime}`, 
               inline: true 
           });
           break;
         default:
           fields.push({ 
               name: watching.user.name + " - " + watching.status, 
-              value: `Episode ${watching.progress} ${updateTime}`, 
+              value: `${+watching.score || "-"}/10 - Ep. ${watching.progress}`, 
               inline: true 
           });
           break;
@@ -162,10 +162,13 @@ module.exports = class Anime {
   parseUpdateTime(updated) {
     if (!updated) return "";
     const time = +this.normalizedNow() - +updated;
-    const when = (time < times.YEARS) ?
-      ` - ${Math.round(time/times.DAYS)} day(s) ago`
-      : ` - ${Math.round(time/times.YEARS)} year(s) ago`;
-    return when;
+    if (time < times.DAYS) {
+      return ` - *${Math.round(time/times.HOURS)}h ago*`
+    } else if (time < times.YEARS) {
+      return ` - *${Math.round(time/times.DAYS)}d ago*`;
+    } else {
+      return ` - *${Math.round(time/times.YEARS)}y ago*`;
+    }
   }
 
   normalizedNow() {

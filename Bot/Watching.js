@@ -88,7 +88,7 @@ module.exports = class Watching {
 
   timeLeftToHours(time) {
     if (!time) return "?";
-    return Math.round(time/times.DAYS);
+    return Math.round(time/times.HOURS);
   }
 
   parseUpdateTime(updated) {

@@ -21,8 +21,12 @@ class MangaCommand extends BaseCommand {
     if (await manga.search() == null) {
       return this.reply("Something went wrong or no manga with that title was found!");
     }
-    const embed = await manga.makeEmbed(this.compact);
+    const embed = await this.getMangaEmbed(manga);
     return this.reply(embed);    
+  }
+
+  async getMangaEmbed(manga) {
+    return manga.makeEmbed();
   }
 }
 module.exports = MangaCommand;

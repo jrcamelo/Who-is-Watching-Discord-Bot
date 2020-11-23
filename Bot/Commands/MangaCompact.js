@@ -5,7 +5,10 @@ class MangaCompactCommand extends MangaCommand {
 
   constructor(message, args) {
     super(message, args);
-    this.compact = true;
+  }
+
+  async getMangaEmbed(manga) {
+    return manga.makeEmbedCompact();
   }
 }
 module.exports = MangaCompactCommand;

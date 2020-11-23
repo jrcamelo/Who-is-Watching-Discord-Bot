@@ -1,4 +1,5 @@
 const Bot = require("../Bot");
+const User = require("../User");
 
 class BaseCommand {
   static prefix = "w.";
@@ -44,7 +45,7 @@ class BaseCommand {
   }
 
   async waitReplyReaction() {
-    const options = { max: 1, time: 30000, errors: ['time'] };
+    const options = { max: 1, time: 60000, errors: ['time'] };
     this.reply.awaitReactions(this.reactionFilter, options)
       .then(collected => {
           this.reactions[collected.first().emoji](collected.first()); 
@@ -56,12 +57,32 @@ class BaseCommand {
     collected.message.delete();
   }
 
-  async reply(text, mention=false) {
+  async reply(botMessage, mention=false) {
+    if (botMessage && typeof(botMessage) != typeof("")) {
+      botMessage.footer = this.addCommandFooter(botMessage);
+      try { await this.message.delete(); } catch(e) { }
+    }
+    
     this.reply = mention ?
-      await this.message.reply(text)
-      : await this.message.channel.send(text)
+      await this.message.reply(botMessage)
+      : await this.message.channel.send(botMessage)
     await this.waitReplyReaction();
     return this.reply;    
+  }
+
+  addCommandFooter(botMessage) {
+    if (!botMessage.footer) {
+      return { 
+        text: `"${this.message.content}" by ${this.message.author.username}`,
+        iconURL: User.makeDiscordAvatarUrl(this.message.author) 
+      }
+    }
+
+    botMessage.footer.text += ` - "${this.message.content}" sent by ${this.message.author.username}`;
+    if (!botMessage.footer.iconURL) {
+      botMessage.footer.iconURL = User.makeDiscordAvatarUrl(this.message.author);
+    }
+    return botMessage.footer;    
   }
 }
 module.exports = BaseCommand;

@@ -36,7 +36,7 @@ class HelpCommand extends BaseCommand {
                       "Link your AniList profile and help your friends in their weeb journey.\n" +
                       "You can [export your MAL](https://myanimelist.net/panel.php?go=export), [make an AniList](https://anilist.co/signup) and [import everything](https://anilist.co/settings/import).\n\n")
       .setThumbnail("https://i.imgur.com/smjjRie.png")
-      .setFooter("by jrlol3", "https://cdn.discordapp.com/avatars/464911746088304650/b4cf2c3e345edcfe9b329611ccce509b.png")
+      .setFooter("Made by jrlol3", "https://cdn.discordapp.com/avatars/464911746088304650/b4cf2c3e345edcfe9b329611ccce509b.png")
       .addFields(fields);
   }
 }

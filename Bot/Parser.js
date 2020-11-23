@@ -6,7 +6,7 @@ class Parser {
 
   static isValidMessage(message) {
     if (message.author.bot) return false;
-    if (!message.content.startsWith(Parser.prefix)) return false;
+    if (!message.content.toLowerCase().startsWith(Parser.prefix)) return false;
     return true;
   }
 

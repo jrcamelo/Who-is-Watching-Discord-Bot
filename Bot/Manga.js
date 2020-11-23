@@ -23,17 +23,25 @@ module.exports = class Manga {
     return this.manga;
   }
 
-  async makeEmbed(compact = false) {
+  async makeEmbed() {
     const embed = new Discord.MessageEmbed()
       .setColor(this.manga.coverImage.color || '#0099ff')
       .setTitle(this.manga.title.romaji)
       .setURL(this.manga.siteUrl)
       .setThumbnail(this.manga.coverImage.large)
       .addFields(this.makeReleasedFields())
+      .addFields(await this.makeReadingFields())
+      .setImage(this.manga.bannerImage);
+    return embed;
+  }
+
+  async makeEmbedCompact() {
+    const embed = new Discord.MessageEmbed()
+      .setColor(this.manga.coverImage.color || '#0099ff')
+      .setTitle(this.manga.title.romaji)
+      .setURL(this.manga.siteUrl)
+      .setThumbnail(this.manga.coverImage.large)
       .addFields(await this.makeReadingFields());
-    if (!compact) {
-      embed.setImage(this.manga.bannerImage)
-    }
     return embed;
   }
 
@@ -78,21 +86,21 @@ module.exports = class Manga {
         case "CURRENT":
           fields.push({ 
               name: reading.user.name + " - Reading", 
-              value: `Chapter ${reading.progress} ${updateTime}`, 
+              value: `Ch. ${reading.progress} ${updateTime}`, 
               inline: true 
           });
           break
         case "COMPLETED":
           fields.push({ 
               name: reading.user.name + " - Completed", 
-              value: `Score: ${+watching.score || "-"} ${updateTime}`, 
+              value: `${+reading.score || "-"}/10 ${updateTime}`, 
               inline: true 
           });
           break;
         default:
           fields.push({ 
               name: reading.user.name + " - " + reading.status, 
-              value: `Chapter ${reading.progress} ${updateTime}`, 
+              value: `Score: ${+reading.score || "-"}/10 - Ch. ${reading.progress}`, 
               inline: true 
           });
           break;
@@ -125,10 +133,13 @@ module.exports = class Manga {
   parseUpdateTime(updated) {
     if (!updated) return "";
     const time = +this.normalizedNow() - +updated;
-    const when = (time < times.YEARS) ?
-      ` - ${Math.round(time/times.DAYS)} day(s) ago`
-      : ` - ${Math.round(time/times.YEARS)} year(s) ago`;
-    return when;
+    if (time < times.DAYS) {
+      return ` - *${Math.round(time/times.HOURS)}h ago*`
+    } else if (time < times.YEARS) {
+      return ` - *${Math.round(time/times.DAYS)}d ago*`;
+    } else {
+      return ` - *${Math.round(time/times.YEARS)}y ago*`;
+    }
   }
 
   normalizedNow() {

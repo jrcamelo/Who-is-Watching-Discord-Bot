@@ -49,8 +49,7 @@ module.exports = class User {
       .setThumbnail(this.anilist.avatar.large)
       .setImage(this.anilist.bannerImage)
       .addFields(this.makeStatisticsFields())
-      .addFields(this.makeFavoriteFields())
-      .setFooter(this.discord.username + " added as " + this.anilist.name, this.getDiscordAvatarUrl());
+      .setFooter("Added as " + this.anilist.name, this.getDiscordAvatarUrl());
   }
 
   makeFavoriteFields() {
@@ -98,8 +97,13 @@ module.exports = class User {
 
   getDiscordAvatarUrl() {
     if (this.discord == null) return null;
+    return User.makeDiscordAvatarUrl(this.discord);
+
+  }
+
+  static makeDiscordAvatarUrl(discordUser) {
     const url = "https://cdn.discordapp.com/avatars/"
-    return url + this.discord + "/" + this.discord.avatar + ".png";
+    return url + discordUser + "/" + discordUser.avatar + ".png";
   }
 
   async saveLinkedUser() {
