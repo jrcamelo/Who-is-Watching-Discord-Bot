@@ -33,7 +33,7 @@ module.exports = class Anime {
   }
 
   previousSearchResult() {
-    this.index = (this.index + 1) % this.searchResult.length;
+    this.index = (this.index - 1) % this.searchResult.length;
     this.anime = this.searchResult[this.index];
     return this.anime;
   }
@@ -106,38 +106,46 @@ module.exports = class Anime {
   async makeWatchingFields() {
     const usersWatching = await this.sortedWhoIsWatching();
     
-    const fields = []
+    let watchList = { name: "Watching: ", count: 0, value: "", inline: true };
+    let completeList = { name: "Completed: ", count: 0, value: "", inline: true };
+    let otherList = { name: "Others: ", count: 0, value: "", inline: true };
     while(usersWatching.length > 0) {
       const watching = usersWatching.pop()
       const updateTime = this.parseUpdateTime(watching.updatedAt);
+      const score = +watching.score ?
+          ` - ${watching.score}/10`
+          : "";
+      const repeat = watching.repeat ?
+          ` (${watching.repeat + 1}x)`
+          : "";
       switch(watching.status) {
-        case "CURRENT":
-          fields.push({ 
-              name: watching.user.name + " - Watching", 
-              value: `Ep. ${watching.progress} ${updateTime}`, 
-              inline: true 
-          });
+        case "CURRENT":          
+          watchList = this.addToList(watchList, 
+              `**${watching.user.name}**${repeat}: Ep. ${watching.progress}${updateTime}`)
           break
         case "COMPLETED":
-          const repeat = watching.repeat ?
-            ` (${watching.repeat + 1}x)`
-            : "";
-          fields.push({ 
-              name: watching.user.name + " - Completed " + repeat, 
-              value: `${+watching.score || "-"}/10 ${updateTime}`, 
-              inline: true 
-          });
+          completeList = this.addToList(completeList, 
+              `**${watching.user.name}**${repeat}${score}${updateTime}`)
           break;
         default:
-          fields.push({ 
-              name: watching.user.name + " - " + watching.status, 
-              value: `${+watching.score || "-"}/10 - Ep. ${watching.progress}`, 
-              inline: true 
-          });
+          otherList = this.addToList(otherList, 
+            `**${watching.user.name}**: ${watching.status}${score}`)
           break;
       }
     }
+
+    const fields = []
+    if (watchList.count) fields.push(watchList);
+    if (completeList.count) fields.push(completeList);
+    if (otherList.count) fields.push(otherList);
     return fields;
+  }
+
+  addToList(list, text) {
+    list.count += 1;
+    if (list.value) list.value += "\n";
+    list.value += text;
+    return list;
   }
 
   addTriviaFooter(embed) {

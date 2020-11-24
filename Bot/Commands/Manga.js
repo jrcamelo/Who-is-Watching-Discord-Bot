@@ -37,7 +37,7 @@ class MangaCommand extends BaseCommand {
   }
 
   async previousManga(_collected, command) {
-    if (!command.manga.nextSearchResult()) return;
+    if (!command.manga.previousSearchResult()) return;
     await command.refreshManga();
   }
 

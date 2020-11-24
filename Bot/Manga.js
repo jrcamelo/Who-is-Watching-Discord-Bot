@@ -32,7 +32,7 @@ module.exports = class Manga {
   }
 
   previousSearchResult() {
-    this.index = (this.index + 1) % this.searchResult.length;
+    this.index = (this.index - 1) % this.searchResult.length;
     this.manga = this.searchResult[this.index];
     return this.manga;
   }

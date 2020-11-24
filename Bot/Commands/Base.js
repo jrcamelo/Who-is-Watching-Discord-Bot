@@ -49,7 +49,7 @@ class BaseCommand {
   }
 
   async waitReplyReaction() {
-    const options = { max: 1, time: 60000, errors: ['time'] };
+    const options = { max: 1, time: 120000, errors: ['time'] };
     this.reply.awaitReactions(this.reactionFilter, options)
       .then(collected => {
           this.reactions[collected.first().emoji](collected.first(), this); 

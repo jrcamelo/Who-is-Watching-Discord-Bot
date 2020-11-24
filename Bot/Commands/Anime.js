@@ -37,7 +37,7 @@ class AnimeCommand extends BaseCommand {
   }
 
   async previousAnime(_collected, command) {
-    if (!command.anime.nextSearchResult()) return;
+    if (!command.anime.previousSearchResult()) return;
     await command.refreshAnime();
   }
 
