@@ -15,15 +15,40 @@ module.exports = class User {
     return this.discord;
   }
 
-  setDiscordFromMention(message) {
-    if (!message.mentions || 
-        !message.mentions.users ||
-        !message.mentions.users.size) {
-      return null;
+  async setDiscordFromSearch(message, text) {
+    if (await this.setDiscordFromMention(message) ||
+        await this.setDiscordFromId(message, text.toLowerCase()) ||
+        await this.setDiscordFromName(message, text.toLowerCase())) {
+      return this.discord;
     }
-    const user = message.mentions.users.values().next().value;
-    if (user == null) return null;
-    this.discord = user;
+  }
+
+  async setDiscordFromMention(message) {
+    if (message.mentions && 
+        message.mentions.users &&
+        message.mentions.users.size) {
+      this.discord = message.mentions.users.values().next().value;
+      return this.discord;
+    }
+  }
+
+  async setDiscordFromId(message, id) {    
+    if (!message.guild) return null;
+    const fromId = message.guild.members.cache.get(id);
+    if (!fromId) return null;
+    this.discord = fromId.user;
+    return this.discord;
+  }
+
+  async setDiscordFromName(message, name) {    
+    if (!message.guild) return null;
+    const regexSearch = new RegExp("/\b(" + name + ")\b/i")
+    const idFromName = message.guild.members.cache.find(
+      member => (member.user.username.toLowerCase().includes(name) || 
+                (member.nickname && member.nickname.toLowerCase().includes(name))) );
+    if (!idFromName) return null;
+    const id = idFromName.id;
+    return await this.setDiscordFromId(message, id);
   }
 
   async setAniListFromDiscord() {
