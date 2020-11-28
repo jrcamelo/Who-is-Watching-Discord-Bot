@@ -6,8 +6,9 @@ const AniListNode = require("../ModifiedAniListNode/");
 const AniList = new AniListNode();
 
 module.exports = class Activities {
-  constructor(type) {
+  constructor(type, userId) {
     this.type = type;
+    this.userId = userId;
     this.index = 1;
   }
 
@@ -18,8 +19,8 @@ module.exports = class Activities {
   };
 
   async getLastActivities() {
-    const users = await Bot.db.getUserIds();
-    const activities = await AniList.watching.lastActivities(users, this.index, this.type);
+    const ids = this.userId || await Bot.db.getUserIds();
+    const activities = await AniList.watching.lastActivities(ids, this.index, this.type);
     if (!activities || !activities.Page || !activities.Page.activities) return null;
     this.activities = activities.Page.activities;
     return this.activities;
@@ -65,7 +66,7 @@ module.exports = class Activities {
     switch(status) {
       case "watched episode":
       case "read chapter":
-        text = `${progress}${total} of **${title}**`
+        text = `**${progress}**${total} of **${title}**`
         break;
       default:
         text = `**${title}**`;

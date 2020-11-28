@@ -1,4 +1,5 @@
 const times = {
+  SECONDS: 1,
   MINUTES: 60,
   HOURS: 60*60,
   DAYS: 60*60*24,
@@ -16,7 +17,12 @@ const scoreFormatMultipliers = {
 function parseUpdateTime(updated) {
   if (!updated) return "";
   const time = +normalizedNow() - +updated;
-  if (time < times.DAYS) {
+  
+  if (time < times.MINUTES) {
+    return ` - *${Math.round(time/times.SECONDS)}s ago*`
+  } else if (time < times.HOURS) {
+    return ` - *${Math.round(time/times.MINUTES)}min ago*`
+  } else if (time < times.DAYS) {
     return ` - *${Math.round(time/times.HOURS)}h ago*`
   } else if (time < times.YEARS) {
     return ` - *${Math.round(time/times.DAYS)}d ago*`;
