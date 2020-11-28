@@ -17,6 +17,9 @@ class Watching {
               ) 
               {
                 mediaId
+                media {
+                  status
+                }
                 progress
                 updatedAt
               }
@@ -44,6 +47,33 @@ class Watching {
                 siteUrl
               }
           } }`, { ids: ids, page: page });      
+    }
+
+    lastActivities(ids, page=1, type=ANIME_LIST) {
+      if (!ids) { throw new Error("Anime IDs are not provided!"); }
+      return this.util.send(
+          `query($ids: [Int], $page: Int, $type: ActivityType) {
+                Page(page:$page, perPage:10){
+                  activities(userId_in: $ids, sort: ID_DESC, type: $type) {
+                    ...on ListActivity {
+                      user {
+                        name
+                      }
+                      media {
+                        title {
+                          romaji
+                        }
+                        episodes
+                        chapters
+                        type
+                      }
+                      progress
+                      status
+                      createdAt
+                    }
+                  }
+                }
+          }`, { ids: ids, page: page, type: type });   
     }
 };
 

@@ -1,14 +1,9 @@
 const Discord = require('discord.js');
-const AniListNode = require("../ModifiedAniListNode/");
 const Bot = require("./Bot");
+const Utils = require("./Utils");
+const AniListNode = require("../ModifiedAniListNode/");
 
 const AniList = new AniListNode();
-
-const times = {
-  HOURS: 60*60,
-  DAYS: 60*60*24,
-  YEARS: 60*60*24*365
-}
 
 module.exports = class Watching {
   constructor(user) {
@@ -19,6 +14,18 @@ module.exports = class Watching {
     this.watching = await this.getWatchingAnime()
     if (this.watching == null ) return null;
     return await this.getEpisodesOfWatchingAnime();
+  }
+
+  async getAiringEpisodes() {
+    let watching = await this.getWatchingAnime();
+    if (watching == null ) return null;
+    this.watching = watching.filter(this.isAiring)
+    return await this.getEpisodesOfWatchingAnime();
+  }
+
+  isAiring(anime) {
+    if (anime.media == null) return false;
+    return anime.media.status == "RELEASING";
   }
 
   async getWatchingAnime() {
@@ -46,7 +53,7 @@ module.exports = class Watching {
 
   makeEmbed() {
     const embed = new Discord.MessageEmbed()
-      .setAuthor(`${this.user.discord.username}'s Watchlist'`, this.user.getDiscordAvatarUrl(), this.user.anilist.siteUrl)
+      .setAuthor(`${this.user.discord.username}'s Watchlist`, this.user.getDiscordAvatarUrl(), this.user.anilist.siteUrl)
       .setColor(this.user.getAniListProfileColor())
       .setThumbnail(this.user.anilist.avatar.large)
       .addFields(this.makeAnimeFields())
@@ -73,35 +80,17 @@ module.exports = class Watching {
     if (watched.progress >= anime.nextAiringEpisode.episode) return null;
     return { 
       name: `**${anime.title.romaji}**`,
-      value: `[**Episode ${anime.nextAiringEpisode.episode} in ${this.timeLeftToHours(anime.nextAiringEpisode.timeUntilAiring)} hour(s)**](${anime.siteUrl}) | ${watched.progress}/${anime.episodes || "?"} episodes ${this.parseUpdateTime(watched.updatedAt)}`,
-      inline: false,
+      value: `[**Ep. ${anime.nextAiringEpisode.episode} in ${Utils.parseTimeLeft(anime.nextAiringEpisode.timeUntilAiring)}**](${anime.siteUrl}) | ${watched.progress}/${anime.episodes || "?"} eps ${Utils.parseUpdateTime(watched.updatedAt)}`,
+      inline: true,
     }
   }
 
   makeCompletedAnimeField(anime, watched) {
     return { 
       name: `${anime.title.romaji}`,
-      value: `[No airing episodes](${anime.siteUrl}) | ${watched.progress}/${anime.episodes || "?"} episodes ${this.parseUpdateTime(watched.updatedAt)}`,
-      inline: false,
+      value: `${watched.progress}/${anime.episodes || "?"} eps ${Utils.parseUpdateTime(watched.updatedAt)}`,
+      inline: true,
     }
-  }
-
-  timeLeftToHours(time) {
-    if (!time) return "?";
-    return Math.round(time/times.HOURS);
-  }
-
-  parseUpdateTime(updated) {
-    if (!updated) return "";
-    const time = +this.normalizedNow() - +updated;
-    const when = (time < times.YEARS) ?
-      `| ${Math.round(time/times.DAYS)} day(s) ago`
-      : `| ${Math.round(time/times.YEARS)} year(s) ago`;
-    return when;
-  }
-
-  normalizedNow() {
-    return parseInt((+Date.now()).toString().substring(0, 10))
   }
 }
   

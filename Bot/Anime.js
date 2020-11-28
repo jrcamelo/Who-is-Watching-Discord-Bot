@@ -1,50 +1,29 @@
 const Discord = require('discord.js');
 const { htmlToText } = require('html-to-text');
 
+const Media = require("./Media");
 const Bot = require("./Bot");
+const Utils = require("./Utils");
 const AniListNode = require("../ModifiedAniListNode/");
 
 const AniList = new AniListNode();
 
-const times = {
-  HOURS: 60*60,
-  DAYS: 60*60*24,
-  YEARS: 60*60*24*365
-}
-
-module.exports = class Anime {
-  constructor(title, type) {
-    this.title = title;
+class Anime extends Media {
+  constructor(title) {
+    super(title);
   }
 
-  async search() {
-    const anime = await AniList.media.pageAnime(this.title);
-    if (anime == null || !anime.Page.media) return null
-    this.searchResult = anime.Page.media;
-    this.index = 0;
-    this.anime = this.searchResult[this.index];
-    return this.anime;
-  }
-
-  nextSearchResult() {
-    this.index = (this.index + 1) % this.searchResult.length;
-    this.anime = this.searchResult[this.index];
-    return this.anime; 
-  }
-
-  previousSearchResult() {
-    this.index = (this.index - 1) % this.searchResult.length;
-    this.anime = this.searchResult[this.index];
-    return this.anime;
+  async getSearchResults(title) {
+    return AniList.media.pageAnime(this.title);
   }
 
   async makeEmbed() {
     let embed = new Discord.MessageEmbed()
-      .setColor(this.anime.coverImage.color || '#0099ff')
-      .setTitle(this.anime.title.romaji)
-      .setURL(this.anime.siteUrl)
-      .setThumbnail(this.anime.coverImage.large)
-      .setImage(this.anime.bannerImage)
+      .setColor(this.media.coverImage.color || '#0099ff')
+      .setTitle(this.media.title.romaji)
+      .setURL(this.media.siteUrl)
+      .setThumbnail(this.media.coverImage.large)
+      .setImage(this.media.bannerImage)
       .addFields(this.makeAiredFields())
       .addFields(this.makeAiringOrCompletedFields())
       .addFields(await this.makeWatchingFields());
@@ -54,52 +33,45 @@ module.exports = class Anime {
 
   async makeEmbedCompact() {
     const embed = new Discord.MessageEmbed()
-      .setColor(this.anime.coverImage.color || '#0099ff')
-      .setTitle(this.anime.title.romaji)
-      .setURL(this.anime.siteUrl)
-      .setThumbnail(this.anime.coverImage.large)
+      .setColor(this.media.coverImage.color || '#0099ff')
+      .setTitle(this.media.title.romaji)
+      .setURL(this.media.siteUrl)
+      .setThumbnail(this.media.coverImage.large)
       .setFooter(this.makeAiringOrCompletedFooter(), Bot.getProfilePicture())
       .addFields(await this.makeWatchingFields());
     return embed;
   }
 
-  limitDescription() {
-    this.anime.description = htmlToText(this.anime.description, {wordwrap: 500})
-    if (this.anime.description.length > 500) {
-      this.anime.description = this.anime.description.substring(0, 500) + "...";
-    }
-  }
-
   makeAiredFields() {
     const fields = [
-        { name: this.anime.format, value: this.anime.episodes.toString() + ' episode(s)', inline: true },
-        { name: 'Aired at', value: this.anime.season + " " + this.anime.seasonYear, inline: true }
+        { name: this.media.format, value: this.media.episodes.toString() + ' episode(s)', inline: true },
+        { name: 'Aired at', value: this.media.season + " " + this.media.seasonYear, inline: true }
     ]
     return fields;
   }
 
   makeAiringOrCompletedFields(inline = true) {
-    if (this.anime.nextAiringEpisode) {
-      const nextEpisode = this.anime.nextAiringEpisode.episode.toString()
-      const timeLeft = Math.ceil(this.anime.nextAiringEpisode.timeUntilAiring/times.HOURS)
+    if (this.media.nextAiringEpisode) {
+      const nextEpisode = this.media.nextAiringEpisode.episode.toString()
+      const timeLeft = Utils.parseTimeLeft(this.media.nextAiringEpisode.timeUntilAiring)
       return [
-          { name: 'Next episode: ' + nextEpisode, value: `${timeLeft} hour(s) left`, inline: inline}
+          { name: `Episode ${nextEpisode}`, value: `${timeLeft} left`, inline: inline}
       ];
     } else {
       return [
-          { name: this.anime.status, value: "No airing episodes", inline: inline}
+          { name: this.media.status, value: "No airing episodes", inline: inline}
       ];
     }
   }
 
   makeAiringOrCompletedFooter() {
-    if (this.anime.nextAiringEpisode) {
-      const nextEpisode = this.anime.nextAiringEpisode.episode.toString()
-      const timeLeft = Math.ceil(this.anime.nextAiringEpisode.timeUntilAiring/times.HOURS)
-      return `Episode ${nextEpisode} in ${timeLeft} hour(s)`;
+    if (this.media.nextAiringEpisode) {
+      const nextEpisode = this.media.nextAiringEpisode.episode.toString()
+      const timeLeft = Utils.parseTimeLeft(this.media.nextAiringEpisode.timeUntilAiring)
+      return `Episode ${nextEpisode} in ${timeLeft}`;
     }
     else {
-      return `${this.anime.status}`;
+      return `${this.media.status}`;
     }
   }
 
@@ -111,10 +83,8 @@ module.exports = class Anime {
     let otherList = { name: "Others: ", count: 0, value: "", inline: true };
     while(usersWatching.length > 0) {
       const watching = usersWatching.pop()
-      const updateTime = this.parseUpdateTime(watching.updatedAt);
-      const score = +watching.score ?
-          ` - ${watching.score}/10`
-          : "";
+      const updateTime = Utils.parseUpdateTime(watching.updatedAt);
+      const score = this.getFormattedScore(watching);
       const repeat = watching.repeat ?
           ` (${watching.repeat + 1}x)`
           : "";
@@ -148,53 +118,9 @@ module.exports = class Anime {
     return list;
   }
 
-  addTriviaFooter(embed) {
-    const roll = Math.random();
-    if (roll > 0.99) {
-      embed.setFooter("Megumin is best girl!", Bot.getOwnerPicture())
-    } else if (roll < 0.1) {
-      embed.setFooter("Try w.a for a compact version of this command.", Bot.getProfilePicture())
-    } else if (roll < 0.2) {
-      embed.setFooter("Add a ❌ reaction to delete any bot message.", Bot.getProfilePicture());
-    }
-    return embed;
-  }
-  
-  async whoIsWatching() {
-    const users = await Bot.db.getUserIds();
-    const result = await AniList.who.watchingAnime(users, this.anime.id);
-    if (!result) return null
-    return result.Page.Watching
-  }
-
-  async sortedWhoIsWatching() {
-    const usersWatching = await this.whoIsWatching();
-    usersWatching.sort(function(a, b) {
-      if (a.progress > b.progress) return 1;
-      if (b.progress > a.progress) return -1;
-      if (a.updatedAt > b.updatedAt) return 1;
-      if (b.updatedAt > a.updatedAt) return -1;
-      if (a.score > b.score) return 1;
-      if (b.score > a.score) return -1;
-      return 0;
-    });
-    return usersWatching;
-  }
-
-  parseUpdateTime(updated) {
-    if (!updated) return "";
-    const time = +this.normalizedNow() - +updated;
-    if (time < times.DAYS) {
-      return ` - *${Math.round(time/times.HOURS)}h ago*`
-    } else if (time < times.YEARS) {
-      return ` - *${Math.round(time/times.DAYS)}d ago*`;
-    } else {
-      return ` - *${Math.round(time/times.YEARS)}y ago*`;
-    }
-  }
-
-  normalizedNow() {
-    return parseInt((+Date.now()).toString().substring(0, 10))
+  async getWatchingMedia(users) {
+    return AniList.who.watchingAnime(users, this.media.id);
   }
 }
-  
+
+module.exports = Anime;
