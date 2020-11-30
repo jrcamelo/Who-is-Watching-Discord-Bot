@@ -78,9 +78,12 @@ module.exports = class Watching {
 
   makeAiringAnimeField(anime, watched) {
     if (watched.progress >= anime.nextAiringEpisode.episode) return null;
+    const bold = watched.progress < anime.nextAiringEpisode.episode -1?
+                  "**"
+                  : ""
     return { 
-      name: `**${anime.title.romaji}**`,
-      value: `[**Ep. ${anime.nextAiringEpisode.episode} in ${Utils.parseTimeLeft(anime.nextAiringEpisode.timeUntilAiring)}**](${anime.siteUrl}) | ${watched.progress}/${anime.episodes || "?"} eps ${Utils.parseUpdateTime(watched.updatedAt)}`,
+      name: `${bold}${anime.title.romaji}${bold}`,
+      value: `[${bold}Ep. ${anime.nextAiringEpisode.episode} in ${Utils.parseTimeLeft(anime.nextAiringEpisode.timeUntilAiring)}${bold}](${anime.siteUrl}) | ${bold}${watched.progress}/${anime.episodes || "?"} eps${bold} ${Utils.parseUpdateTime(watched.updatedAt)}`,
       inline: true,
     }
   }

@@ -95,7 +95,7 @@ class Anime extends Media {
           break
         case "COMPLETED":
           completeList = this.addToList(completeList, 
-              `**${watching.user.name}**${repeat}${score}${updateTime}`)
+              `**${watching.user.name}**${repeat}:${score}${updateTime}`)
           break;
         default:
           otherList = this.addToList(otherList, 

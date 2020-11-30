@@ -81,14 +81,14 @@ class Manga extends Media {
         case "COMPLETED":
           fields.push({ 
               name: reading.user.name + " - Completed", 
-              value: `${score + "/10"} ${updateTime}`, 
+              value: `${score} ${updateTime}`, 
               inline: true 
           });
           break;
         default:
           fields.push({ 
               name: reading.user.name + " - " + reading.status, 
-              value: `${score + "/10"} - Ch. ${reading.progress}`, 
+              value: `Ch. ${reading.progress} - ${score}`, 
               inline: true 
           });
           break;
