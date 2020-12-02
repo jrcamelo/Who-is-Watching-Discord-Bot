@@ -7,7 +7,7 @@ class BaseCommand {
   static helpTitle = "BaseCommand";
   static helpDescription = "Command to be extended";
 
-  static deleteReactionEmoji = "❌";
+  static deleteReactionEmoji = "💥";
   static previousReactionEmoji = "⬅️";
   static nextReactionEmoji = "➡️";
 

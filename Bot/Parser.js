@@ -13,8 +13,7 @@ class Parser {
   parse() {
     const Help = require("./Commands/Help")
     const Link = require("./Commands/Link");
-    const Me = require("./Commands/Me");
-    const List = require("./Commands/List");
+    const Profile = require("./Commands/Profile");
     const Anime = require("./Commands/Anime");
     const AnimeCompact = require("./Commands/AnimeCompact");
     const Manga = require("./Commands/Manga");
@@ -22,7 +21,7 @@ class Parser {
     const Watching = require("./Commands/Watching");
     const WatchingAiring = require("./Commands/WatchingAiring");
     const Feed = require("./Commands/Feed");
-    const commands = [Link, Me, List, Anime, Manga, Watching, WatchingAiring, Feed];
+    const commands = [Link, Profile, Anime, Manga, Watching, WatchingAiring, Feed];
 
     this.separateCommandAndArgs();
 
@@ -33,11 +32,8 @@ class Parser {
       case Link.command:
         return new Link(this.message, this.args)
         break;
-      case Me.command:
-        return new Me(this.message)
-        break;
-      case List.command:
-        return new List(this.message, this.args)
+      case Profile.command:
+        return new Profile(this.message, this.args)
         break;
       case Anime.command:
         return new Anime(this.message, this.args);

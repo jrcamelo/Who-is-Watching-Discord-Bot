@@ -5,7 +5,7 @@ const User = require("../User");
 class FeedCommand extends BaseCommand {
   static command = "feed";
   static helpTitle = "Returns a list of the last activities from linked users.";
-  static helpDescription = `${BaseCommand.prefix + this.command} [<a> or <m>]`
+  static helpDescription = `${BaseCommand.prefix + this.command} [<a> or <m> or <@user>]`
 
   constructor(message, args) {
     super(message, args);
