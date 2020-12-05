@@ -32,7 +32,8 @@ class Watching {
           `query($ids: [Int], $page: Int) {
               Page(page:$page, perPage:20) {
               media(
-                id_in: $ids
+                id_in: $ids,
+                sort: FAVOURITES_DESC
               ) 
               {      
                 nextAiringEpisode {
@@ -75,6 +76,35 @@ class Watching {
                 }
           }`, { ids: ids, page: page, type: type });   
     }
+
+    animeFromEveryUser(ids, page) {
+      if (!ids) { throw new Error("Anime IDs are not provided!"); }
+      return this.util.send(
+          `query($ids: [Int], $page: Int) {
+            Page(page:$page, perPage:50)
+            {
+              Watching:mediaList(
+                userId_in: $ids,
+                type: ANIME,
+                status: CURRENT,            
+                sort: UPDATED_TIME_DESC,
+              ) {
+                  mediaId
+                  media {
+                    title {
+                      romaji
+                    }
+                    nextAiringEpisode {
+                      episode
+                      timeUntilAiring
+                    }
+                    episodes
+                    siteUrl
+                  }
+              }
+            }
+          }`, { ids: ids, page: page });  
+    };
 };
 
 module.exports = Watching;
