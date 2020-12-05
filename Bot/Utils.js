@@ -48,8 +48,17 @@ function normalizedNow() {
   return parseInt((+Date.now()).toString().substring(0, 10))
 }
 
+function isEmpty(obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
+
 module.exports.times = times;
 module.exports.scoreFormatMultipliers = scoreFormatMultipliers;
 module.exports.parseUpdateTime = parseUpdateTime;
 module.exports.parseTimeLeft = parseTimeLeft;
 module.exports.normalizedNow = normalizedNow;
+module.exports.isEmpty = isEmpty;

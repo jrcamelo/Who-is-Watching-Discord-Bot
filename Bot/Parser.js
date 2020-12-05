@@ -21,7 +21,7 @@ class Parser {
     const Watching = require("./Commands/Watching");
     const WatchingAiring = require("./Commands/WatchingAiring");
     const Feed = require("./Commands/Feed");
-    const WatchList = require("./Commands/WatchList");
+    const Notice = require("./Commands/Notice");
     const commands = [Link, Profile, Anime, Manga, Watching, WatchingAiring, Feed];
 
     this.separateCommandAndArgs();
@@ -57,8 +57,8 @@ class Parser {
       case Feed.command:
         return new Feed(this.message, this.args);
         break;
-      case WatchList.command:
-        return new WatchList(this.message);
+      case Notice.command:
+        return new Notice(this.message);
         break;
       default:
         break;

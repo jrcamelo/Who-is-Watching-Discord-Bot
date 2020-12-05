@@ -2,7 +2,7 @@ require('dotenv').config()
 const Discord = require("discord.js");
 const Parser = require("./Parser.js");
 const Database = require("./Database");
-const { Timer } = require("./Timer");
+const Cron = require('node-cron');
 
 class Bot {
   static db;
@@ -19,8 +19,8 @@ class Bot {
     });
     await Bot.client.login(process.env.BOT_TOKEN);
     await Bot.setStatus();
+    Bot.scheduleCronJob();    
 
-    Bot.timer = new Timer(360000000, function() {});
     console.log("Bot is now watching.");
   }
 
@@ -37,10 +37,8 @@ class Bot {
   static async readMessage(message) {
     try {
       if (Parser.isValidMessage(message)) {
-        await Bot.updateTimer(message);       
         const command = new Parser(message).parse();
         if (command) {
-          Bot.lastValidChannel = message.channel;
           return command.tryExecute();
         }
       }
@@ -49,21 +47,11 @@ class Bot {
     }
   }
 
-  static updateTimer(message) {
-    if (message.author.username != "jrlol3" || message.author.bot) return;
-    if (Bot.timer == null || Bot.timer.timer == null) {
-      Bot.timer = new Timer(
-        3600000, 
-        function(channel) { Bot.reminder(channel) }, 
-        Bot.lastValidChannel || message.channel);
-    } else {
-      Bot.timer.setTime(3600000);
-      Bot.timer.setArgs(Bot.lastValidChannel || message.channel);
-    }
-  }
-
-  static reminder(channel) {
-    channel.send("1 hour has passed since the last message from jrlol3. Is he alright?");
+  static scheduleCronJob() {
+    Cron.schedule("0 */6 * * *", function() {
+      const NoticeManager = require("./NoticeManager");
+      NoticeManager.executeCronjobs();
+    });
   }
 
   static getProfilePicture() {

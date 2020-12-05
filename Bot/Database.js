@@ -4,16 +4,20 @@ module.exports = class Database {
   constructor() {
     this.db = new ReplitDatabase();
   }
-  
+
+  async get(id) {
+    return await this.db.get(id);
+  }
+
   async getUsers() {
     return await this.db.list("USER_");
   }
 
-  async getAniListId(discordId, prefix="USER_") {
+  async getAniListId(discordId, prefix = "USER_") {
     return await this.db.get(prefix + discordId);
   }
 
-  async addUser(discordId, anilistId, prefix="USER_") {
+  async addUser(discordId, anilistId, prefix = "USER_") {
     return await this.db.set(prefix + discordId, anilistId)
   }
 
@@ -26,8 +30,15 @@ module.exports = class Database {
     return ids;
   }
 
-  async getGuildChannelList(guildId, prefix="GUILD_") {
-    return await this.db.get(prefix + guild);
+  async getGuildChannelList(guildId, prefix = "GUILD_") {
+    return await this.db.get(prefix + guildId);
   }
 
+  async getAllCronjobs() {
+    return await this.db.list("CRON_");
+  }
+
+  async addCronjob(guildId, channelId, prefix = "CRON_") {
+    return await this.db.set(prefix + guildId, { guild: guildId, channel: channelId });
+  }
 }

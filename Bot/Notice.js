@@ -5,9 +5,23 @@ const AniListNode = require("../ModifiedAniListNode/");
 
 const AniList = new AniListNode();
 
-module.exports = class WatchList {
-  constructor() {
-    this.watchlist = {}
+module.exports = class Notice {
+  constructor(guild, channel) {
+    this.guild = guild;
+    this.channel = channel;
+    this.watchlist = {};
+  }
+
+  async sendMessageInChannel() {
+    await this.getWatchingAnime()
+    if (Utils.isEmpty(this.watchlist)) { 
+      return 
+    }
+    const guild = await Bot.client.guilds.cache.get(this.guild);
+    if (guild == null) return
+    const channel = await guild.channels.cache.get(this.channel);
+    if (channel == null) return
+    await channel.send(this.makeEmbed())
   }
 
   async getWatchingAnime() {
@@ -42,7 +56,7 @@ module.exports = class WatchList {
   isNextEpisodeToday(anime) {
     if (anime.media.nextAiringEpisode == null) return false;
     const time = anime.media.nextAiringEpisode.timeUntilAiring
-    return (time / Utils.times.DAYS) < 1;
+    return (time / (Utils.times.HOURS * 12)) < 1;
   }
 
   makeEmbed() {
