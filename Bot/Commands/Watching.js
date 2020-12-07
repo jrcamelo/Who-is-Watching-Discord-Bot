@@ -12,19 +12,8 @@ class WatchingCommand extends BaseCommand {
   }
 
   async execute() {
-    const user = new User();
-    if (this.isArgsBlank()) {
-      await user.setDiscordFromMessage(this.message);
-      if (!await user.setAniListFromDiscord()) {
-        return this.reply("AniList user not found, maybe you need to link your account with w.link <Your AniList username>");
-      }
-    } else {
-      const id = this.args.join(" ");
-      await user.setDiscordFromSearch(this.message, id);
-      if (!await user.setAniListFromDiscord()) {
-        return this.reply("AniList user not found, maybe they need to link their account with w.link <AniList username> or your mention failed.");
-      }
-    }
+    const user = await this.makeAnilistUserFromMessageOrMention(this.message);
+    if (!user) return;
     const watching = new Watching(user);
     if (await this.getEpisodes(watching) == null) {
       return this.reply("Either you are not watching any anime or there was an error somewhere.");

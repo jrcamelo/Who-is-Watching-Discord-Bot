@@ -11,20 +11,8 @@ class ProfileCommand extends BaseCommand {
   }
 
   async execute() {
-    const user = new User();
-    if (this.isArgsBlank()) {
-      await user.setDiscordFromMessage(this.message);
-      if (!await user.setAniListFromDiscord()) {
-        return this.reply("AniList user not found, maybe you need to link your account with w.link <Your AniList username>");
-      }
-    } else {
-      const id = this.args.join(" ");
-      await user.setDiscordFromSearch(this.message, id);
-      if (!await user.setAniListFromDiscord()) {
-        return this.reply("AniList user not found, maybe they need to link their account with w.link <AniList username> or your mention failed.");
-      }
-    }
-
+    const user = await this.makeAnilistUserFromMessageOrMention(this.message);
+    if (!user) return;
     const embed = user.makeAniListProfileEmbed();  
     return this.reply(embed);
   }

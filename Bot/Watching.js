@@ -55,7 +55,7 @@ module.exports = class Watching {
     const embed = new Discord.MessageEmbed()
       .setAuthor(`${this.user.discord.username}'s Watchlist`, this.user.getDiscordAvatarUrl(), this.user.anilist.siteUrl)
       .setColor(this.user.getAniListProfileColor())
-      .setThumbnail(this.user.anilist.avatar.large)
+      //.setThumbnail(this.user.anilist.avatar.large)
       .addFields(this.makeAnimeFields())
       .setFooter(`${this.user.discord.username} as ${this.user.anilist.name}`, this.user.getDiscordAvatarUrl())
     return embed;

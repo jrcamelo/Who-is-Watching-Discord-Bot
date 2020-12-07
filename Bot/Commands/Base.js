@@ -90,6 +90,28 @@ class BaseCommand {
     return botMessage.footer;    
   }
 
+  async makeAnilistUserFromMessageOrMention(message) {
+    if (!message) { 
+      return false;
+    }
+    const user = new User();
+    if (this.isArgsBlank()) {
+      await user.setDiscordFromMessage(message);
+      if (!await user.setAniListFromDiscord()) {
+        await this.reply("AniList user not found, maybe you need to link your account with w.link <Your AniList username>");
+        return false;
+      }
+    } else {
+      const id = this.args.join(" ");
+      await user.setDiscordFromSearch(message, id);
+      if (!await user.setAniListFromDiscord()) {
+        await this.reply("AniList user not found, maybe they need to link their account with w.link <AniList username> or your mention failed.");
+        return false;
+      }
+    }
+    return user;
+  }
+
   addDeleteReactionToReply() {
     return this.reply.react(BaseCommand.deleteReactionEmoji);
   }
