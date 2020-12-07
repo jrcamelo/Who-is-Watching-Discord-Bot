@@ -11,7 +11,7 @@ class ProfileCommand extends BaseCommand {
   }
 
   async execute() {
-    const user = await this.makeAnilistUserFromMessageOrMention(this.message);
+    const user = await this.makeAnilistUserFromMessageOrMention();
     if (!user) return;
     const embed = user.makeAniListProfileEmbed();  
     return this.reply(embed);

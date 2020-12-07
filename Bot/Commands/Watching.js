@@ -12,7 +12,7 @@ class WatchingCommand extends BaseCommand {
   }
 
   async execute() {
-    const user = await this.makeAnilistUserFromMessageOrMention(this.message);
+    const user = await this.makeAnilistUserFromMessageOrMention();
     if (!user) return;
     const watching = new Watching(user);
     if (await this.getEpisodes(watching) == null) {
