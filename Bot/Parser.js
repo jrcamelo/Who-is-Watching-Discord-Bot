@@ -49,10 +49,10 @@ class Parser {
         return new MangaCompact(this.message, this.args);
         break;
       case Watching.command:
-        return new Watching(this.message);
+        return new Watching(this.message, this.args);
         break;
       case WatchingAiring.command:
-        return new WatchingAiring(this.message);
+        return new WatchingAiring(this.message, this.args);
         break;
       case Feed.command:
         return new Feed(this.message, this.args);

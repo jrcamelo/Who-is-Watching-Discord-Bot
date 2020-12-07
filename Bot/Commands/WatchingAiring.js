@@ -4,7 +4,7 @@ const WatchingCommand = require("./Watching");
 class WatchingAiringCommand extends WatchingCommand {
   static command = "airing";
   static helpTitle = "Lists the next episodes of airing anime the user is watching.";
-  static helpDescription = `${BaseCommand.prefix + this.command}`
+  static helpDescription = `${BaseCommand.prefix + this.command} [<@user>]`
 
   constructor(message, args) {
     super(message, args);

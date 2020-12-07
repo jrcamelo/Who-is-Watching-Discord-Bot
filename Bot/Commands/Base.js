@@ -93,5 +93,9 @@ class BaseCommand {
   addDeleteReactionToReply() {
     return this.reply.react(BaseCommand.deleteReactionEmoji);
   }
+  
+  isArgsBlank() {
+    return !this.args.length;
+  }
 }
 module.exports = BaseCommand;

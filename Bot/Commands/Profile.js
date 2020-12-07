@@ -28,9 +28,5 @@ class ProfileCommand extends BaseCommand {
     const embed = user.makeAniListProfileEmbed();  
     return this.reply(embed);
   }
-
-  isArgsBlank() {
-    return !this.args.length;
-  }
 }
 module.exports = ProfileCommand;
