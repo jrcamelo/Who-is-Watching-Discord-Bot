@@ -14,6 +14,7 @@ class Parser {
     const Help = require("./Commands/Help")
     const Link = require("./Commands/Link");
     const Profile = require("./Commands/Profile");
+    const ProfileCompact = require("./Commands/ProfileCompact");
     const Anime = require("./Commands/Anime");
     const AnimeCompact = require("./Commands/AnimeCompact");
     const Manga = require("./Commands/Manga");
@@ -35,6 +36,9 @@ class Parser {
         break;
       case Profile.command:
         return new Profile(this.message, this.args)
+        break;
+      case ProfileCompact.command:
+        return new ProfileCompact(this.message, this.args)
         break;
       case Anime.command:
         return new Anime(this.message, this.args);

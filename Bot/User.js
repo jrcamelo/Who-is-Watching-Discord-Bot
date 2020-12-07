@@ -74,7 +74,16 @@ module.exports = class User {
       .setThumbnail(this.anilist.avatar.large)
       .setImage(this.anilist.bannerImage)
       .addFields(this.makeStatisticsFields())
-      .setFooter("Added as " + this.anilist.name, this.getDiscordAvatarUrl());
+      .setFooter(this.discord.username + " added as " + this.anilist.name, this.getDiscordAvatarUrl());
+  }
+
+  makeAniListProfileCompactEmbed() {
+    if (this.anilist == null) return null;
+    return new Discord.MessageEmbed()
+      .setColor(this.getAniListProfileColor())
+      .setTitle(this.anilist.name)
+      .setURL(this.anilist.siteUrl)
+      .addFields(this.makeStatisticsFields())
   }
 
   makeFavoriteFields() {
