@@ -4,6 +4,7 @@ const { htmlToText } = require('html-to-text');
 const Media = require("./Media");
 const Bot = require("./Bot");
 const Utils = require("./Utils");
+const { addAnimeTriviaFooter } = require("./Trivia");
 const AniListNode = require("../ModifiedAniListNode/");
 
 const AniList = new AniListNode();
@@ -27,7 +28,7 @@ class Anime extends Media {
       .addFields(this.makeAiredFields())
       .addFields(this.makeAiringOrCompletedFields())
       .addFields(await this.makeWatchingFields());
-    embed = this.addTriviaFooter(embed);
+    embed = addAnimeTriviaFooter(embed);
     return embed;
   }
 

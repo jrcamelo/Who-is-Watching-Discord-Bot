@@ -63,18 +63,6 @@ module.exports = class Media {
     }
     return ` ${+watching.score * formatMultiplier}/10`;
   }
-
-  addTriviaFooter(embed) {
-    const roll = Math.random();
-    if (roll > 0.99) {
-      embed.setFooter("Megumin is best girl!", Bot.getOwnerPicture())
-    } else if (roll < 0.1) {
-      embed.setFooter("Try w.a for a compact version of this command.", Bot.getProfilePicture())
-    } else if (roll < 0.2) {
-      embed.setFooter("Add a ❌ reaction to delete any bot message.", Bot.getProfilePicture());
-    }
-    return embed;
-  }
   
   async whoIsWatching() {
     const users = await Bot.db.getUserIds();
