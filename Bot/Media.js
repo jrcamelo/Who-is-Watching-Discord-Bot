@@ -26,13 +26,15 @@ module.exports = class Media {
   }
 
   nextSearchResult() {
-    this.index = (this.index + 1) % this.searchResult.length;
+    const limit = this.searchResult.length
+    this.index = (limit + this.index + 1) % limit;
     this.media = this.searchResult[this.index];
     return this.media; 
   }
 
   previousSearchResult() {
-    this.index = (this.index - 1) % this.searchResult.length;
+    const limit = this.searchResult.length
+    this.index = (limit + this.index - 1) % limit;
     this.media = this.searchResult[this.index];
     return this.media;
   }

@@ -44,14 +44,16 @@ class Anime extends Media {
 
   makeAiredFields() {
     const fields = [
-        { name: this.media.format, value: this.media.episodes.toString() + ' episode(s)', inline: true },
+        { name: this.media.format, value: (this.media.episodes || "?").toString() + ' episode(s)', inline: true },
         { name: 'Aired at', value: this.media.season + " " + this.media.seasonYear, inline: true }
     ]
     return fields;
   }
 
   makeAiringOrCompletedFields(inline = true) {
-    if (this.media.nextAiringEpisode) {
+    if (this.media.nextAiringEpisode && 
+        this.media.nextAiringEpisode.episode != null && 
+        this.media.nextAiringEpisode.timeUntilAiring) {
       const nextEpisode = this.media.nextAiringEpisode.episode.toString()
       const timeLeft = Utils.parseTimeLeft(this.media.nextAiringEpisode.timeUntilAiring)
       return [
