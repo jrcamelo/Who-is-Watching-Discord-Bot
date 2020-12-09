@@ -22,6 +22,8 @@ class Bot {
     Bot.scheduleCronJob();    
 
     console.log("Bot is now watching.");
+    // Testing
+    console.log(await Bot.db.getAll())
   }
 
   static async setStatus() {

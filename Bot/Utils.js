@@ -56,9 +56,18 @@ function isEmpty(obj) {
     return true;
 }
 
+function getGuildIdOrUserId(message) {
+  let guild = message.author;
+  if (message.guild && message.guild.id) {
+    guild = message.guild.id
+  }    
+  return guild;
+}
+
 module.exports.times = times;
 module.exports.scoreFormatMultipliers = scoreFormatMultipliers;
 module.exports.parseUpdateTime = parseUpdateTime;
 module.exports.parseTimeLeft = parseTimeLeft;
 module.exports.normalizedNow = normalizedNow;
 module.exports.isEmpty = isEmpty;
+module.exports.getGuildIdOrUserId = getGuildIdOrUserId;

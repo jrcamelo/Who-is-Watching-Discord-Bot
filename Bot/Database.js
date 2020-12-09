@@ -5,6 +5,11 @@ module.exports = class Database {
     this.db = new ReplitDatabase();
   }
 
+  // For tests
+  async getAll() {
+    return await this.db.getAll();
+  }
+
   async get(id) {
     return await this.db.get(id);
   }
@@ -21,6 +26,29 @@ module.exports = class Database {
     return await this.db.set(prefix + discordId, anilistId)
   }
 
+  async addGuild(guildId, prefix = "GUILD_") {
+    return await this.db.set(prefix + guildId, [])
+  }
+
+  async getGuildDiscordUsers(guildId, prefix = "GUILD_") {
+    return await this.db.get(prefix + guildId);
+  }
+
+  async addUserToGuild(discord, anilist, guildId, prefix = "GUILD_") {
+    const guild = await this.getGuildDiscordUsers(guildId, prefix) || {};
+    guild[discord.id] = anilist.id;
+    return await this.db.set(prefix + guildId, guild);
+  }
+
+  async getGuildAnilistIds(guildId, prefix = "GUILD_") {
+    const guild = await this.getGuildDiscordUsers(guildId, prefix) || [];
+    for (let discordId in guild) {
+      ids.push(guild[discordId]);
+    }
+    return ids;
+  }
+
+  // Outdated?
   async getUserIds() {
     const users = await this.getUsers();
     const ids = []
@@ -28,10 +56,6 @@ module.exports = class Database {
       ids.push(await this.getAniListId(users[i], ""))
     }
     return ids;
-  }
-
-  async getGuildChannelList(guildId, prefix = "GUILD_") {
-    return await this.db.get(prefix + guildId);
   }
 
   async getAllCronjobs() {

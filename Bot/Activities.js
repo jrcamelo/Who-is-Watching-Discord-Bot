@@ -6,8 +6,9 @@ const AniListNode = require("../ModifiedAniListNode/");
 const AniList = new AniListNode();
 
 module.exports = class Activities {
-  constructor(type, userId) {
+  constructor(type, guildId, userId) {
     this.type = type;
+    this.guildId = guildId;
     this.userId = userId;
     this.index = 1;
   }
@@ -19,7 +20,7 @@ module.exports = class Activities {
   };
 
   async getLastActivities() {
-    const ids = this.userId || await Bot.db.getUserIds();
+    const ids = this.userId || await Bot.db.getGuildAnilistIds(this.guildId)
     const activities = await AniList.watching.lastActivities(ids, this.index, this.type);
     if (!activities || !activities.Page || !activities.Page.activities) return null;
     this.activities = activities.Page.activities;

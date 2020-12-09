@@ -8,8 +8,9 @@ const AniListNode = require("../ModifiedAniListNode/");
 const AniList = new AniListNode();
 
 module.exports = class Media {
-  constructor(title) {
+  constructor(title, guildId) {
     this.title = title;
+    this.guildId = guildId;
   }
 
   async search() {
@@ -65,7 +66,7 @@ module.exports = class Media {
   }
   
   async whoIsWatching() {
-    const users = await Bot.db.getUserIds();
+    const users = await Bot.db.getGuildAnilistIds(this.guildId)
     const result = await this.getWatchingMedia(users);
     if (!result) return [];
     return result.Page.mediaList;

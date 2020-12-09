@@ -25,7 +25,7 @@ module.exports = class Notice {
   }
 
   async getWatchingAnime() {
-    this.users = await Bot.db.getUserIds()
+    this.users = await Bot.db.getGuildAnilistIds(this.guild)
     await this.updateWatchingAnime();
     return this.watchlist;
   }

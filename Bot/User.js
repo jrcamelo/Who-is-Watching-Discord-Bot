@@ -1,17 +1,25 @@
 const AniListNode = require("../ModifiedAniListNode/");
-const Discord = require("discord.js")
-const Bot = require("./Bot")
+const Discord = require("discord.js");
+const Bot = require("./Bot");
+const Utils = require("./Utils");
 
 const AniList = new AniListNode();
 
 module.exports = class User {
-  constructor(discord, anilist) {
+  constructor(guild, discord, anilist) {
+    this.guild = guild;
     this.discord = discord;
     this.anilist = anilist;
+  }
+
+  setGuild(message) {
+    this.guild = Utils.getGuildIdOrUserId(message);
+    return this.guild;
   }
   
   setDiscordFromMessage(message) {
     this.discord = message.author;
+    this.setGuild(message);
     return this.discord;
   }
 
@@ -28,6 +36,7 @@ module.exports = class User {
         message.mentions.users &&
         message.mentions.users.size) {
       this.discord = message.mentions.users.values().next().value;
+      this.setGuild(message);
       return this.discord;
     }
   }
@@ -37,12 +46,12 @@ module.exports = class User {
     const fromId = message.guild.members.cache.get(id);
     if (!fromId) return null;
     this.discord = fromId.user;
+    this.setGuild(message);
     return this.discord;
   }
 
   async setDiscordFromName(message, name) {    
     if (!message.guild) return null;
-    const regexSearch = new RegExp("/\b(" + name + ")\b/i")
     const idFromName = message.guild.members.cache.find(
       member => (member.user.username.toLowerCase().includes(name) || 
                 (member.nickname && member.nickname.toLowerCase().includes(name))) );
@@ -86,6 +95,7 @@ module.exports = class User {
       .addFields(this.makeStatisticsFields())
   }
 
+  // Not being used
   makeFavoriteFields() {
     const favoriteFields = [];
     const favoriteAnime = this.getAniListFavorite("anime");
@@ -142,7 +152,13 @@ module.exports = class User {
 
   async saveLinkedUser() {
     if (this.discord && this.anilist) {
-      Bot.db.addUser(this.discord, this.anilist.id)
+      return await Bot.db.addUser(this.discord, this.anilist.id);
+    }
+  }
+
+  async saveUserToGuild() {
+    if (this.discord && this.anilist && this.guild) {
+      return await Bot.db.addUserToGuild(this.discord, this.anilist, this.guild);
     }
   }
 }

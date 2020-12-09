@@ -9,8 +9,8 @@ const AniListNode = require("../ModifiedAniListNode/");
 const AniList = new AniListNode();
 
 class Manga extends Media {
-  constructor(title) {
-    super(title);
+  constructor(title, guildId) {
+    super(title, guildId);
   }
 
   async getSearchResults() {

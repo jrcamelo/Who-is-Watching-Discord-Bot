@@ -11,20 +11,33 @@ class LinkCommand extends BaseCommand {
   }
 
   async execute() {
+    this.user = new User();
+    await this.user.setDiscordFromMessage(this.message);
     if (!this.args.length) {
-      return this.reply("Add your AniList username after the command\n" + LinkCommand.helpDescription)
+      return this.noArgs()
     }
 
-    const user = new User();
-    await user.setDiscordFromMessage(this.message);
     const anilistUsername = this.args.join("").trim();
-    if (!await user.setAniListFromUsername(anilistUsername)) {
+    if (!await this.user.setAniListFromUsername(anilistUsername)) {
       return this.reply("Could not find AniList user with username: " + anilistUsername);
     }
+    await this.user.saveLinkedUser();
+    await this.user.saveUserToGuild();
+    return this.makeEmbed();
+  }
 
-    const embed = user.makeAniListProfileEmbed();  
-    await user.saveLinkedUser();
+  async noArgs() {
+    if (await this.user.setAniListFromDiscord() == null) {
+      return this.reply("Add your AniList username after the command\n" + LinkCommand.helpDescription)
+    }
+    await this.user.saveUserToGuild();
+    return this.makeEmbed();
+  }
+
+  async makeEmbed() {
+    const embed = this.user.makeAniListProfileEmbed();
     return this.reply(embed);
-  }  
+  }
+
 }
 module.exports = LinkCommand;
