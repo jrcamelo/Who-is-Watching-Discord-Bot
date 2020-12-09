@@ -27,7 +27,8 @@ class Anime extends Media {
       .setImage(this.media.bannerImage)
       .addFields(this.makeAiredFields())
       .addFields(this.makeAiringOrCompletedFields())
-      .addFields(await this.makeWatchingFields());
+      .addFields(await this.makeWatchingFields())
+      .setFooter(`${this.index + 1}/${this.searchResult.length}`,Bot.getProfilePicture())
     embed = addAnimeTriviaFooter(embed);
     return embed;
   }
@@ -38,7 +39,7 @@ class Anime extends Media {
       .setTitle(this.media.title.romaji)
       .setURL(this.media.siteUrl)
       .setThumbnail(this.media.coverImage.large)
-      .setFooter(this.makeAiringOrCompletedFooter(), Bot.getProfilePicture())
+      .setFooter(`${this.index + 1}/${this.searchResult.length} - ` + this.makeAiringOrCompletedFooter(), Bot.getProfilePicture())
       .addFields(await this.makeWatchingFields());
     return embed;
   }

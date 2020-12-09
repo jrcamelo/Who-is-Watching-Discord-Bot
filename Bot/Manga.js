@@ -25,7 +25,8 @@ class Manga extends Media {
       .setThumbnail(this.media.coverImage.large)
       .addFields(this.makeReleasedFields())
       .addFields(await this.makeReadingFields())
-      .setImage(this.media.bannerImage);
+      .setImage(this.media.bannerImage)
+      .setFooter(`${this.index + 1}/${this.searchResult.length}`)
     return embed;
   }
 
@@ -35,7 +36,8 @@ class Manga extends Media {
       .setTitle(this.media.title.romaji)
       .setURL(this.media.siteUrl)
       .setThumbnail(this.media.coverImage.large)
-      .addFields(await this.makeReadingFields());
+      .addFields(await this.makeReadingFields())
+      .setFooter(`${this.index + 1}/${this.searchResult.length}`)
     return embed;
   }
 
