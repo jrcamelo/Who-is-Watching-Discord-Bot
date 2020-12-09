@@ -1,7 +1,6 @@
 const BaseCommand = require("./Base.js");
 const Activities = require("../Activities");
 const User = require("../User");
-const { getGuildIdOrUserId } = require("../Utils");
 
 class FeedCommand extends BaseCommand {
   static command = "feed";
@@ -21,14 +20,18 @@ class FeedCommand extends BaseCommand {
     }
   }
 
-  async execute() {
+  async execute() {    
+    if (this.message.guild == null) {
+      return this.reply("This command does not work on DMs");
+    }
+
     this.mention = new User();
     if (await this.mention.setDiscordFromMention(this.message) &&
         await this.mention.setAniListFromDiscord()) {
       this.mentionId = this.mention.anilist.id;
     }
 
-    this.feed = new Activities(this.type, getGuildIdOrUserId(this.message), this.mentionId);
+    this.feed = new Activities(this.type, this.guildId, this.mentionId);
     if (await this.feed.getLastActivities() == null) {
       return this.reply("Something went wrong or nobody is linked!");
     }

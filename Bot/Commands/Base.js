@@ -1,5 +1,6 @@
 const Bot = require("../Bot");
 const User = require("../User");
+const { getGuildIdOrUserId } = require("../Utils");
 
 class BaseCommand {
   static prefix = "w.";
@@ -17,6 +18,7 @@ class BaseCommand {
     this.args = args;
     this.client = Bot.client;
     this.db = Bot.db;
+    this.guildId = getGuildIdOrUserId(message);
 
     this.reactionEmote = "779800410168098816";
     // this.addWatchingReactionToMessage();
@@ -35,6 +37,7 @@ class BaseCommand {
   }
 
   async tryExecute() {
+    this.message.channel.startTyping();
     try {
       await this.execute();
     } catch(e) {
@@ -42,6 +45,7 @@ class BaseCommand {
       console.log(e);
       console.log("\n")
     }
+    this.message.channel.stopTyping();
   }
 
   async execute() {

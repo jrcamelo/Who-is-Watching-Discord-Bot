@@ -11,6 +11,10 @@ class LinkCommand extends BaseCommand {
   }
 
   async execute() {
+    if (this.message.guild == null) {
+      return this.reply("This command does not work on DMs");
+    }
+
     this.user = new User();
     await this.user.setDiscordFromMessage(this.message);
     if (!this.args.length) {

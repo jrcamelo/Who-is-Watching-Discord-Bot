@@ -10,7 +10,11 @@ class NoticeCommand extends BaseCommand {
     super(message, args);
   }
 
-  async execute() {
+  async execute() {    
+    if (this.message.guild == null) {
+      return this.reply("This command does not work on DMs");
+    }
+
     await NoticeManager.setNoticesToChannel(this.message);
     this.addWatchingReactionToMessage();
   }

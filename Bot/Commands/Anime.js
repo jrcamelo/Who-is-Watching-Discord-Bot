@@ -17,7 +17,7 @@ class AnimeCommand extends BaseCommand {
     }
 
     const title = this.args.join(" ");
-    this.anime = new Anime(title);
+    this.anime = new Anime(title, this.guildId);
     if (await this.anime.search() == null) {
       return this.reply("Something went wrong or no anime with that title was found!");
     }
@@ -47,7 +47,7 @@ class AnimeCommand extends BaseCommand {
   }
 
   async refreshAnime() {
-    const embed = await this.getAnimeEmbed(this.anime);
+    const embed = await this.getAnimeEmbed();
     await this.botMessage.edit(embed);
     await this.waitReplyReaction();
   }

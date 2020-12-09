@@ -56,6 +56,17 @@ function isEmpty(obj) {
     return true;
 }
 
+function makeAnilistAnimeUrl(id) {
+  return `https://anilist.co/anime/${id}`
+}
+
+function secondsToTime(secs) {
+  const minutes = (secs - (secs %= 60)) / 60
+  const seconds = 9 < secs ? ":" : ":0";
+  return minutes + seconds + secs
+}
+
+// Not used?
 function getGuildIdOrUserId(message) {
   let guild = message.author;
   if (message.guild && message.guild.id) {
@@ -70,4 +81,6 @@ module.exports.parseUpdateTime = parseUpdateTime;
 module.exports.parseTimeLeft = parseTimeLeft;
 module.exports.normalizedNow = normalizedNow;
 module.exports.isEmpty = isEmpty;
+module.exports.makeAnilistAnimeUrl = makeAnilistAnimeUrl;
+module.exports.secondsToTime = secondsToTime;
 module.exports.getGuildIdOrUserId = getGuildIdOrUserId;

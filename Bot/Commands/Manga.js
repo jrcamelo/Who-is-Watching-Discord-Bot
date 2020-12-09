@@ -17,7 +17,7 @@ class MangaCommand extends BaseCommand {
     }
 
     const title = this.args.join(" ");
-    this.manga = new Manga(title);
+    this.manga = new Manga(title, this.guildId);
     if (await this.manga.search() == null) {
       return this.reply("Something went wrong or no manga with that title was found!");
     }
@@ -47,7 +47,7 @@ class MangaCommand extends BaseCommand {
   }
 
   async refreshManga() {
-    const embed = await this.getMangaEmbed(this.manga);
+    const embed = await this.getMangaEmbed();
     await this.botMessage.edit(embed);
     await this.waitReplyReaction();
   }

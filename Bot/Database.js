@@ -41,10 +41,14 @@ module.exports = class Database {
   }
 
   async getGuildAnilistIds(guildId, prefix = "GUILD_") {
-    const guild = await this.getGuildDiscordUsers(guildId, prefix) || [];
+    const ids = []
+    const guild = await this.getGuildDiscordUsers(guildId, prefix) || {};
     for (let discordId in guild) {
+      console.log(discordId)
       ids.push(guild[discordId]);
     }
+    console.log(guild)
+    console.log(ids)
     return ids;
   }
 
