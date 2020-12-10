@@ -40,7 +40,7 @@ module.exports = class Activities {
 
   makeEmbed() {
     const embed = new Discord.MessageEmbed()
-      .setTitle("Last activities - Page " + this.index)
+      .setTitle("Last activities - Page " + this.index + "/14")
       .setDescription(this.makeDescription());
     return embed;
   }
@@ -65,8 +65,8 @@ module.exports = class Activities {
 
     let text = "";
     switch(status) {
-      case "watched episode":
-      case "read chapter":
+      case "watched ep.":
+      case "read ch.":
         text = `**${progress}**${total} of **${title}**`
         break;
       default:

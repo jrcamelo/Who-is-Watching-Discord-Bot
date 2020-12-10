@@ -4,9 +4,9 @@ const TraceMoe = require("../TraceMoe");
 const AnimeCompact = require("./AnimeCompact")
 
 class TraceCommand extends BaseCommand {
-  static command = "trace";
-  static helpTitle = "Guesses the anime from a screenshot using trace.moe.";
-  static helpDescription = `${BaseCommand.prefix + this.command} {Attached anime screenshot}`
+  static command = "what";
+  static helpTitle = "Uses trace.moe to try to find the anime from an attached or linked screenshot.";
+  static helpDescription = `${BaseCommand.prefix + this.command} {Anime Screenshot}`
 
   static checkEmoji = "✅";
 
@@ -15,9 +15,13 @@ class TraceCommand extends BaseCommand {
   }
 
   async execute() {
+    if (this.message.guild == null) {
+      return this.reply("This command does not work on DMs");
+    }
+
     this.trace = new TraceMoe(this.message, this.args.join(" "));
     if (!(await this.trace.setImage())) {
-      return this.reply("Could not get the screenshot, try attaching it.");
+      return this.reply("Could not find a screenshot.");
     }
     if (!(await this.trace.searchWithImage())) {
       return this.reply("There was a problem with the search on trace.moe. Maybe we hit the 10 searches per minute limit.")
@@ -49,7 +53,7 @@ class TraceCommand extends BaseCommand {
   }
 
   async refresh() {
-    const embed = await this.getEmbed(this.trace);
+    const embed = await this.getEmbed();
     await this.botMessage.edit(embed);
     await this.waitReplyReaction();
   }

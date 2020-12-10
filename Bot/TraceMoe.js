@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const ImageFetch = require('fetch-base64')
 const Fetch = require('node-fetch');
+const IsImage = require('is-image-url')
 const Bot = require("./Bot");
 const Utils = require("./Utils");
 const Anime = require("./Anime")
@@ -16,10 +17,19 @@ module.exports = class TraceMoe {
   }
 
   async setImage() {
-    if (this.message.attachments.lenght > 0) {
-      this.image = this.message.attachments.values().next().value.url;
+    if (this.message.attachments.size > 0) {
+      const attachment = this.message.attachments.values().next().value.url;
+      if (IsImage(attachment)) {
+        this.image = attachment;
+      } else {
+        console.log(attachment + " is not an image");
+      }
     } else {
-      this.image = this.link; 
+      if (IsImage(this.link)) {
+        this.image = this.link;
+      } else {
+        console.log(this.link + " is not an image");
+      }
     }
     this.base64 = await this.convertImageToBase64();
     if (!this.base64) return null;
@@ -81,12 +91,12 @@ module.exports = class TraceMoe {
     const { anilist_id, filename, at, tokenthumb } = this.source;
     return `https://trace.moe/thumbnail.php?anilist_id=${anilist_id}&file=${encodeURIComponent(filename)}&t=${at}&token=${tokenthumb}`
   }
-  
+
   nextSearchResult() {
     const limit = this.searchResult.length
     this.index = (limit + this.index + 1) % limit;
     this.source = this.searchResult[this.index];
-    return this.source; 
+    return this.source;
   }
 
   previousSearchResult() {
@@ -101,4 +111,3 @@ module.exports = class TraceMoe {
   }
 
 }
-  
