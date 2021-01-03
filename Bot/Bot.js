@@ -50,7 +50,7 @@ class Bot {
   }
 
   static scheduleCronJob() {
-    Cron.schedule("0 */6 * * *", function() {
+    Cron.schedule("0 */8 * * *", function() {
       const NoticeManager = require("./NoticeManager");
       NoticeManager.executeCronjobs();
     });
