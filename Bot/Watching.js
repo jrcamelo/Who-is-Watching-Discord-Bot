@@ -77,7 +77,7 @@ module.exports = class Watching {
   }
 
   makeAiringAnimeField(anime, watched) {
-    if (watched.progress >= anime.nextAiringEpisode.episode) return null;
+    // if (watched.progress >= anime.nextAiringEpisode.episode) return null;
     const bold = watched.progress < anime.nextAiringEpisode.episode -1?
                   "**"
                   : ""

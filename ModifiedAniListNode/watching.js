@@ -12,7 +12,7 @@ class Watching {
               Watching:mediaList(
                 userId:$user,
                 type:ANIME,
-                status:CURRENT,            
+                status_in: [CURRENT, REPEATING],            
                 sort: UPDATED_TIME_DESC,
               ) 
               {
@@ -86,7 +86,7 @@ class Watching {
               Watching:mediaList(
                 userId_in: $ids,
                 type: ANIME,
-                status: CURRENT,            
+                status_in: [CURRENT, PLANNING],      
                 sort: UPDATED_TIME_DESC,
               ) {
                   mediaId
