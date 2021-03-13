@@ -3,6 +3,7 @@ const User = require("./user"),
     who = require("./who"),
     watching = require("./watching"),
     util = require("./utilities");
+    va = require("./voiceactor");
 
 /**
  * The main class for AniList-Node
@@ -40,6 +41,11 @@ class AniList {
          * @Member { Media }
          */
         this.media = new media(this.__util);
+
+        /**
+         * @Member { VA }
+         */
+        this.va = new va(this.__util);
     };
 
     /**

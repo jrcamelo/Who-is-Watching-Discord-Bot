@@ -22,6 +22,7 @@ class Parser {
     const Watching = require("./Commands/Watching");
     const WatchingAiring = require("./Commands/WatchingAiring");
     const Feed = require("./Commands/Feed");
+    const VA = require("./Commands/VA");
     const Notice = require("./Commands/Notice");
     const Trace = require("./Commands/Trace");
     const Sauce = require("./Commands/Sauce");
@@ -31,7 +32,8 @@ class Parser {
                       Manga, 
                       Watching, 
                       WatchingAiring, 
-                      Feed, 
+                      Feed,
+                      VA,
                       Trace, 
                       Sauce];
 
@@ -70,6 +72,9 @@ class Parser {
         break;
       case Feed.command:
         return new Feed(this.message, this.args);
+        break;
+      case VA.command:
+        return new VA(this.message, this.args);
         break;
       case Notice.command:
         return new Notice(this.message);
