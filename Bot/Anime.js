@@ -87,15 +87,26 @@ class Anime extends Media {
     let otherList = { name: "Others: ", count: 0, value: "", inline: true };
     while(usersWatching.length > 0) {
       const watching = usersWatching.pop()
-      const updateTime = Utils.parseUpdateTime(watching.updatedAt);
+      let updateTime = Utils.parseUpdateTime(watching.updatedAt);
+      // if (watching.completedAt) {
+      //   if (watching.completedAt.year && watching.completedAt.month && watching.completedAt.day) {
+      //     let dateString = `${watching.completedAt.day}/${watching.completedAt.month}/${watching.completedAt.year}`
+      //     let date = new Date(dateString);
+      //     updateTime = Utils.parseUpdateTime(+date);
+      //   }
+      // }
       const score = this.getFormattedScore(watching);
       const repeat = watching.repeat ?
           ` (${watching.repeat + 1}x)`
           : "";
       switch(watching.status) {
-        case "CURRENT":          
+        case "CURRENT":  
           watchList = this.addToList(watchList, 
               `**${watching.user.name}**${repeat}: Ep. ${watching.progress}${updateTime}`)
+          break
+        case "REPEATING":    
+          watchList = this.addToList(watchList, 
+              `**${watching.user.name}**${repeat}: Rewatch Ep. ${watching.progress}${updateTime}`)
           break
         case "COMPLETED":
           completeList = this.addToList(completeList, 

@@ -67,10 +67,12 @@ class BaseCommand {
     collected.message.delete();
   }
 
-  async reply(botMessage, mention=false) {
+  async reply(botMessage, mention=false, shouldDelete=true) {
     if (botMessage && typeof(botMessage) != typeof("")) {
       botMessage.footer = this.addCommandFooter(botMessage);
-      try { await this.message.delete(); } catch(e) { }
+      if (shouldDelete) {
+        try { await this.message.delete(); } catch(e) { }
+      }
     }
     
     this.reply = mention ?

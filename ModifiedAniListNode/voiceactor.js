@@ -9,8 +9,8 @@ class VoiceActor {
         `
         query($name: String) {
           
-          Page(page:1, perPage:10){
-          characters(search: $name, sort: FAVOURITES_DESC) {
+          Page(page:1, perPage:20){
+          characters(search: $name, sort: SEARCH_MATCH) {
             id,
             name {
               full

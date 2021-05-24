@@ -35,6 +35,7 @@ class Who {
               score 
               status 
               updatedAt 
+              completedAt { year month day }
               repeat
             } } }`, { users: users, anime: anime });
     };

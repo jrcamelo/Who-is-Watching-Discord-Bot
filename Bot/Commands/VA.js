@@ -8,7 +8,7 @@ class VACommand extends BaseCommand {
 
   constructor(message, args) {
     super(message, args);
-    this.compact = false;
+    this.language = "JAPANESE";
   }
 
   async execute() {
@@ -17,7 +17,7 @@ class VACommand extends BaseCommand {
     }
 
     const name = this.args.join(" ");
-    this.va = new CharVA(name);
+    this.va = new CharVA(name, this.language);
     if (await this.va.search() == null) {
       return this.reply("Something went wrong or no character was found!");
     }

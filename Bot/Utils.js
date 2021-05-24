@@ -11,7 +11,11 @@ const scoreFormatMultipliers = {
   POINT_10: 1,
   POINT_10_DECIMAL: 1,
   POINT_5: 2,
-  POINT_3: 3.3,
+  POINT_3: 3.333333333333333333,
+}
+
+function fixDecimal(number) {
+  return (+number).toFixed(1).replace(/\.0+$/,'')
 }
 
 function parseUpdateTime(updated) {
@@ -77,6 +81,7 @@ function getGuildIdOrUserId(message) {
 
 module.exports.times = times;
 module.exports.scoreFormatMultipliers = scoreFormatMultipliers;
+module.exports.fixDecimal = fixDecimal;
 module.exports.parseUpdateTime = parseUpdateTime;
 module.exports.parseTimeLeft = parseTimeLeft;
 module.exports.normalizedNow = normalizedNow;

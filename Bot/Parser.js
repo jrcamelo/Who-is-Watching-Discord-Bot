@@ -23,6 +23,9 @@ class Parser {
     const WatchingAiring = require("./Commands/WatchingAiring");
     const Feed = require("./Commands/Feed");
     const VA = require("./Commands/VA");
+    const VAEnglish = require("./Commands/VAEnglish");
+    const ThreeByThree = require("./Commands/ThreeByThree");
+    const ThreeByThreeManga = require("./Commands/ThreeByThreeManga");
     const Notice = require("./Commands/Notice");
     const Trace = require("./Commands/Trace");
     const Sauce = require("./Commands/Sauce");
@@ -40,6 +43,7 @@ class Parser {
     this.separateCommandAndArgs();
 
     switch(this.command.toLowerCase()) {
+      case "h":
       case Help.command:
         return new Help(this.message, commands);
         break;
@@ -76,6 +80,9 @@ class Parser {
       case VA.command:
         return new VA(this.message, this.args);
         break;
+      case VAEnglish.command:
+        return new VAEnglish(this.message, this.args);
+        break;
       case Notice.command:
         return new Notice(this.message);
         break;
@@ -84,6 +91,12 @@ class Parser {
         break;
       case Sauce.command:
         return new Sauce(this.message, this.args);
+        break;
+      case ThreeByThree.command:
+        return new ThreeByThree(this.message, this.args);
+        break;
+      case ThreeByThreeManga.command:
+        return new ThreeByThreeManga(this.message, this.args);
         break;
       default:
         break;

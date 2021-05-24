@@ -17,6 +17,10 @@ class Bot {
     Bot.client.on("message", async function(message) {
       Bot.readMessage(message);
     });
+    Bot.client.on('rateLimit', (info) => {
+      console.log(`Rate limit hit - diff: ${info.timeDifference} timeout: ${info.timeout}}`)
+    });
+    Bot.client.on('debug', console.log);
     await Bot.client.login(process.env.BOT_TOKEN);
     await Bot.setStatus();
     Bot.scheduleCronJob();    

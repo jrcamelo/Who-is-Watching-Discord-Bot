@@ -64,7 +64,6 @@ module.exports = class Activities {
     if (total) total = `/${total}`;
 
     let text = "";
-    console.log(status)
     switch(status) {
       case "watched episode":
       case "read chapter":

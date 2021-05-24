@@ -1,8 +1,8 @@
-const ReplitDatabase = require("@replit/database");
+const Storage = require("./Storage")
 
 module.exports = class Database {
   constructor() {
-    this.db = new ReplitDatabase();
+    this.db = new Storage()
   }
 
   // For tests
@@ -68,5 +68,21 @@ module.exports = class Database {
 
   async addCronjob(guildId, channelId, prefix = "CRON_") {
     return await this.db.set(prefix + guildId, { guild: guildId, channel: channelId });
+  }
+
+  async addThreeByThree(discordId, imageLink, prefix = "3x3_") {
+    return await this.db.set(prefix + discordId, imageLink);
+  }
+
+  async getThreeByThree(discordId, prefix = "3x3_") {
+    return await this.db.get(prefix + discordId);
+  }
+
+  async addThreeByThreeManga(discordId, imageLink, prefix = "3x3M_") {
+    return await this.db.set(prefix + discordId, imageLink);
+  }
+
+  async getThreeByThreeManga(discordId, prefix = "3x3M_") {
+    return await this.db.get(prefix + discordId);
   }
 }

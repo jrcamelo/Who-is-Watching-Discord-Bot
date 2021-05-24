@@ -8,8 +8,9 @@ const AniListNode = require("../ModifiedAniListNode/");
 const AniList = new AniListNode();
 
 module.exports = class CharVA {
-  constructor(name) {
+  constructor(name, language="JAPANESE") {
     this.name = name;
+    this.language = language;
   }
 
   async search() {
@@ -77,7 +78,7 @@ module.exports = class CharVA {
     char.title = anime.node.title.romaji;
     char.favourites = anime.node.favourites;
     for (let va of anime.voiceActors) {
-      if (va.language == "JAPANESE") {
+      if (va.language == this.language) {
         char.va = va.id;
         break;
       }
@@ -131,6 +132,15 @@ module.exports = class CharVA {
       characters.push(char);
     }
     characters.sort((a, b) => (b.favourites - a.favourites));
+    console.log(characters[0])
+    console.log(characters[1])
+    console.log(characters[2])
+    console.log(characters[3])
+    console.log(characters[4])
+    console.log(characters[5])
+    console.log(characters[6])
+    console.log(characters[7])
+    console.log(characters[8])
     return characters;
   }
 }

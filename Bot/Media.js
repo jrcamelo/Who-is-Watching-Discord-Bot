@@ -62,8 +62,9 @@ module.exports = class Media {
         watching.user.mediaListOptions.scoreFormat) {
       formatMultiplier = Utils.scoreFormatMultipliers[watching.user.mediaListOptions.scoreFormat]
     }
-    return ` ${+watching.score * formatMultiplier}/10`;
+    return ` ${Utils.fixDecimal(+watching.score * formatMultiplier)}/10`;
   }
+
   
   async whoIsWatching() {
     const users = await Bot.db.getGuildAnilistIds(this.guildId)
