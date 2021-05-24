@@ -37,7 +37,6 @@ class BaseCommand {
   }
 
   async tryExecute() {
-    this.message.channel.startTyping();
     try {
       await this.execute();
     } catch(e) {
@@ -45,7 +44,6 @@ class BaseCommand {
       console.log(e);
       console.log("\n")
     }
-    this.message.channel.stopTyping();
   }
 
   async execute() {
@@ -53,7 +51,7 @@ class BaseCommand {
   }
 
   async waitReplyReaction() {
-    const options = { max: 1, time: 60000, errors: ['time'] };
+    const options = { max: 1, time: 30000, errors: ['time'] };
     this.reply.awaitReactions(this.reactionFilter, options)
       .then(collected => {
           this.reactions[collected.first().emoji](collected.first(), this); 
