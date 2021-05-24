@@ -20,7 +20,9 @@ class Bot {
     Bot.client.on('rateLimit', (info) => {
       console.log(`Rate limit hit - diff: ${info.timeDifference} timeout: ${info.timeout}}`)
     });
-    Bot.client.on('debug', console.log);
+    Bot.client.on('debug', (message) => {
+      console.log((new Date()).toUTCString() + message)
+    });
     await Bot.client.login(process.env.BOT_TOKEN);
     await Bot.setStatus();
     Bot.scheduleCronJob();    
