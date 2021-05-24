@@ -23,4 +23,11 @@ module.exports = class Storage {
     db[key] = value
     this.write(db)
   }
+
+  list(prefix) {
+    const db = this.read()
+    return Object.keys(db).filter(function(key) {
+      return key.startsWith(prefix)
+    })
+  }
 }
