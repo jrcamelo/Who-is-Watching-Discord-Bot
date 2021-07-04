@@ -67,7 +67,7 @@ function makeAnilistAnimeUrl(id) {
 function secondsToTime(secs) {
   const minutes = (secs - (secs %= 60)) / 60
   const seconds = 9 < secs ? ":" : ":0";
-  return minutes + seconds + Math.round(secs)
+  return `${minutes}${seconds}${Math.round(secs)}`
 }
 
 // Not used?

@@ -54,23 +54,23 @@ module.exports = class TraceMoe {
   async sendPost() {
     const body = new URLSearchParams(`image=${this.base64}`);
     const options = { method: "POST", body }
-    const post = await Fetch(searchUrl, options);
+    const post = await Fetch(`https://api.trace.moe/search?anilistInfo&url=${encodeURIComponent(this.image)}`)
     return await post.json();
   }
 
   parseResponse(response) {
-    if (!response.docs) return;
-    this.searchResult = response.docs;
-    this.source = response.docs[0];
+    if (!response.result) return;
+    this.searchResult = response.result;
+    this.source = response.result[0];
     return this.source;
   }
 
   async makeEmbed() {
     let embed = new Discord.MessageEmbed()
-      .setTitle(this.source.title_romaji)
-      .setURL(Utils.makeAnilistAnimeUrl(this.source.anilist_id))
-      .setThumbnail(this.image)
-      .setImage(this.getImagePreview())
+      .setTitle(this.getTitle())
+      .setURL(Utils.makeAnilistAnimeUrl(this.source.anilist.id))
+      .setThumbnail(this.source.image)
+      .setImage(this.source.image)
       .addFields([this.makeAnimeField(), this.makeSimilarityField()])
       .setFooter(`${this.index + 1}/${this.searchResult.length} - ${siteUrl}`)
     return embed;
@@ -78,7 +78,7 @@ module.exports = class TraceMoe {
 
   makeAnimeField() {
     const episode = `Episode ${this.source.episode}`;
-    const time = Utils.secondsToTime(this.source.at);
+    const time = Utils.secondsToTime(+this.source.from);
     return { name: episode, value: `At ${time}`, inline: true }
   }
 
@@ -88,8 +88,8 @@ module.exports = class TraceMoe {
   }
 
   getImagePreview() {
-    const { anilist_id, filename, at, tokenthumb } = this.source;
-    return `https://trace.moe/thumbnail.php?anilist_id=${anilist_id}&file=${encodeURIComponent(filename)}&t=${at}&token=${tokenthumb}`
+    const { anilist, filename, at, tokenthumb } = this.source;
+    return `https://trace.moe/thumbnail.php?anilist_id=${anilist.id}&file=${encodeURIComponent(filename)}&t=${at}&token=${tokenthumb}`
   }
 
   nextSearchResult() {
@@ -107,7 +107,7 @@ module.exports = class TraceMoe {
   }
 
   getTitle() {
-    return this.source.title_romaji;
+    return this.source.anilist.title.romaji;
   }
 
 }

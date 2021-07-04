@@ -15,6 +15,11 @@ class NoticeCommand extends BaseCommand {
       return this.reply("This command does not work on DMs");
     }
 
+    const member = this.message.channel.guild.members.cache.get(this.message.author.id);
+    if (!member.permissions.has("ADMINISTRATOR")) {
+      return this.reply("Only administrators can use this command.");
+    }
+
     await NoticeManager.setNoticesToChannel(this.message);
     this.addWatchingReactionToMessage();
   }

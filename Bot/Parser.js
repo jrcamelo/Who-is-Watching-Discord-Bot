@@ -29,16 +29,19 @@ class Parser {
     const Notice = require("./Commands/Notice");
     const Trace = require("./Commands/Trace");
     const Sauce = require("./Commands/Sauce");
-    const commands = [Link, 
-                      Profile, 
-                      Anime, 
-                      Manga, 
-                      Watching, 
-                      WatchingAiring, 
-                      Feed,
-                      VA,
-                      Trace, 
-                      Sauce];
+    const commands = [
+      Link, 
+      Profile, 
+      Anime, 
+      Manga, 
+      Watching, 
+      WatchingAiring, 
+      Feed,
+      VA,
+      Trace, 
+      Sauce,
+      Notice
+    ];
 
     this.separateCommandAndArgs();
 
