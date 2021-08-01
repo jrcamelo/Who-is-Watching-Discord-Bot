@@ -62,7 +62,7 @@ class BaseCommand {
   }
 
   async deleteReply(collected, _command) {
-    collected.message.delete();
+    try { collected.message.delete(); } catch (e) {}
   }
 
   async reply(botMessage, mention=false, shouldDelete=true) {
