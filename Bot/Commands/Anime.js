@@ -13,16 +13,16 @@ class AnimeCommand extends BaseCommand {
 
   async execute() {
     if (!this.args || this.args.length < 1) {
-      return this.reply("Try adding part of a title of an anime, as such: " + this.helpDescription);
+      return this.reply({ content: "Try adding part of a title of an anime, as such: " + this.helpDescription });
     }
 
     const title = this.args.join(" ");
     this.anime = new Anime(title, this.guildId);
     if (await this.anime.search() == null) {
-      return this.reply("Something went wrong or no anime with that title was found!");
+      return this.reply({ content: "Something went wrong or no anime with that title was found!" });
     }
     const embed = await this.getAnimeEmbed();
-    this.botMessage = await this.reply(embed);
+    this.botMessage = await this.reply({ embeds: [embed] });
 
     if (this.anime.searchResult.length > 1) {
       await this.addPreviousAndNextReactions();

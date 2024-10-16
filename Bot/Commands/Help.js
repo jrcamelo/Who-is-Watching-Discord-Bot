@@ -12,12 +12,12 @@ class HelpCommand extends BaseCommand {
 
   async execute() {
     const fields = [];
-    for (let i in this.args) {      
+    for (let i in this.args) {
       fields.push(this.makeCommandField(this.args[i]));
     }
 
     const embed = this.makeEmbed(fields);
-    return this.reply(embed);
+    return this.reply({ embeds: [embed] });
   }
 
   makeCommandField(command) {
@@ -33,10 +33,10 @@ class HelpCommand extends BaseCommand {
       .setColor("#26edff")
       .setAuthor("How to use the bot", Bot.getProfilePicture())
       .setDescription("Bot made to help keep track of Who? is watching or reading what.\n" +
-                      "Link your AniList profile and help your friends in their weeb journey.\n" +
-                      "You can [export your MAL](https://myanimelist.net/panel.php?go=export), [make an AniList](https://anilist.co/signup) and [import everything](https://anilist.co/settings/import).\n\n")
+        "Link your AniList profile and help your friends in their weeb journey.\n" +
+        "You can [export your MAL](https://myanimelist.net/panel.php?go=export), [make an AniList](https://anilist.co/signup) and [import everything](https://anilist.co/settings/import).\n\n")
       .setThumbnail("https://i.imgur.com/smjjRie.png")
-      .setFooter("Made by jrlol3", "https://cdn.discordapp.com/avatars/464911746088304650/b4cf2c3e345edcfe9b329611ccce509b.png")
+      .setFooter({ text: "Made by jrlol3", iconURL: "https://cdn.discordapp.com/avatars/464911746088304650/b4cf2c3e345edcfe9b329611ccce509b.png" })
       .addFields(fields);
   }
 }

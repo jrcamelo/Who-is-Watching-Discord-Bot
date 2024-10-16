@@ -72,7 +72,7 @@ module.exports = class TraceMoe {
       .setThumbnail(this.source.image)
       .setImage(this.source.image)
       .addFields([this.makeAnimeField(), this.makeSimilarityField()])
-      .setFooter(`${this.index + 1}/${this.searchResult.length} - ${siteUrl}`)
+      .setFooter({ text: `${this.index + 1}/${this.searchResult.length} - ${siteUrl}` })
     return embed;
   }
 

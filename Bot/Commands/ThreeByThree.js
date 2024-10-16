@@ -26,9 +26,10 @@ class ThreeByThreeCommand extends BaseCommand {
     }
 
     if (await this.getThreeByThree(three) != null) {
-      return this.reply(await three.makeEmbed());
+      const embed = await three.makeEmbed()
+      return this.reply({ embeds: [embed] });
     } else {
-      return this.reply("3x3 was not found.");
+      return this.reply({ content: "3x3 was not found." });
     }
   }
 

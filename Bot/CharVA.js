@@ -8,7 +8,7 @@ const AniListNode = require("../ModifiedAniListNode/");
 const AniList = new AniListNode();
 
 module.exports = class CharVA {
-  constructor(name, language="JAPANESE") {
+  constructor(name, language = "JAPANESE") {
     this.name = name;
     this.language = language;
   }
@@ -98,7 +98,7 @@ module.exports = class CharVA {
       .setURL(this.va.Staff.siteUrl)
       .setThumbnail(this.va.Staff.image.large)
       .setDescription(this.makeDescription())
-      .setFooter(`${this.index + 1}/${this.searchResult.length}`)
+      .setFooter({ text: `${this.index + 1}/${this.searchResult.length}` })
     return embed;
   }
 
@@ -144,4 +144,3 @@ module.exports = class CharVA {
     return characters;
   }
 }
-  

@@ -16,18 +16,18 @@ class TraceCommand extends BaseCommand {
 
   async execute() {
     if (this.message.guild == null) {
-      return this.reply("This command does not work on DMs");
+      return this.reply({ content: "This command does not work on DMs" });
     }
 
     this.trace = new TraceMoe(this.message, this.args.join(" "));
     if (!(await this.trace.setImage())) {
-      return this.reply("Could not find a screenshot.");
+      return this.reply({ content: "Could not find a screenshot." });
     }
     if (!(await this.trace.searchWithImage())) {
-      return this.reply("There was a problem with the search on trace.moe. Maybe we hit the 10 searches per minute limit.")
+      return this.reply({ content: "There was a problem with the search on trace.moe. Maybe we hit the 10 searches per minute limit." })
     }
     const embed = await this.getEmbed();
-    this.botMessage = await this.reply(embed);
+    this.botMessage = await this.reply({ embeds: [embed] });
 
     if (this.trace.searchResult.length > 1) {
       await this.addPreviousAndNextReactions();
@@ -67,7 +67,7 @@ class TraceCommand extends BaseCommand {
     command.message.content = TraceCommand.checkEmoji;
     return new AnimeCompact(command.message, [command.trace.getTitle()]).tryExecute();
   }
-  
+
   async getEmbed() {
     return this.trace.makeEmbed();
   }

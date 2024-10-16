@@ -16,7 +16,7 @@ module.exports = class User {
     this.guild = Utils.getGuildIdOrUserId(message);
     return this.guild;
   }
-  
+
   setDiscordFromMessage(message) {
     this.discord = message.author;
     this.setGuild(message);
@@ -25,23 +25,23 @@ module.exports = class User {
 
   async setDiscordFromSearch(message, text) {
     if (await this.setDiscordFromMention(message) ||
-        await this.setDiscordFromId(message, text.toLowerCase()) ||
-        await this.setDiscordFromName(message, text.toLowerCase())) {
+      await this.setDiscordFromId(message, text.toLowerCase()) ||
+      await this.setDiscordFromName(message, text.toLowerCase())) {
       return this.discord;
     }
   }
 
   async setDiscordFromMention(message) {
-    if (message.mentions && 
-        message.mentions.users &&
-        message.mentions.users.size) {
+    if (message.mentions &&
+      message.mentions.users &&
+      message.mentions.users.size) {
       this.discord = message.mentions.users.values().next().value;
       this.setGuild(message);
       return this.discord;
     }
   }
 
-  async setDiscordFromId(message, id) {    
+  async setDiscordFromId(message, id) {
     if (!message.guild) return null;
     const fromId = message.guild.members.cache.get(id);
     if (!fromId) return null;
@@ -50,11 +50,11 @@ module.exports = class User {
     return this.discord;
   }
 
-  async setDiscordFromName(message, name) {    
+  async setDiscordFromName(message, name) {
     if (!message.guild) return null;
     const idFromName = message.guild.members.cache.find(
-      member => (member.user.username.toLowerCase().includes(name) || 
-                (member.nickname && member.nickname.toLowerCase().includes(name))) );
+      member => (member.user.username.toLowerCase().includes(name) ||
+        (member.nickname && member.nickname.toLowerCase().includes(name))));
     if (!idFromName) return null;
     const id = idFromName.id;
     return await this.setDiscordFromId(message, id);
@@ -83,7 +83,7 @@ module.exports = class User {
       .setThumbnail(this.anilist.avatar.large)
       .setImage(this.anilist.bannerImage)
       .addFields(this.makeStatisticsFields())
-      .setFooter(this.discord.username + " added as " + this.anilist.name, this.getDiscordAvatarUrl());
+      .setFooter({ text: this.discord.username + " added as " + this.anilist.name, iconURL: this.getDiscordAvatarUrl() });
   }
 
   makeAniListProfileCompactEmbed() {
@@ -100,11 +100,11 @@ module.exports = class User {
     const favoriteFields = [];
     const favoriteAnime = this.getAniListFavorite("anime");
     if (favoriteAnime != null) {
-      favoriteFields.push({name: "Favorite anime", value: favoriteAnime, inline: false});
-    }    
+      favoriteFields.push({ name: "Favorite anime", value: favoriteAnime, inline: false });
+    }
     const favoriteManga = this.getAniListFavorite("manga");
     if (favoriteManga != null) {
-      favoriteFields.push({name: "Favorite manga", value: favoriteManga, inline: true});
+      favoriteFields.push({ name: "Favorite manga", value: favoriteManga, inline: true });
     }
     return favoriteFields;
   }
@@ -112,8 +112,8 @@ module.exports = class User {
   makeStatisticsFields() {
     const stats = this.anilist.statistics;
     return [
-      {name: `Anime count: ${stats.anime.count}`, value: `Mean score: ${stats.anime.meanScore}`, inline: true},
-      {name: `Manga count: ${stats.manga.count}`, value: `Mean score: ${stats.manga.meanScore}`, inline: true}
+      { name: `Anime count: ${stats.anime.count}`, value: `Mean score: ${stats.anime.meanScore}`, inline: true },
+      { name: `Manga count: ${stats.manga.count}`, value: `Mean score: ${stats.manga.meanScore}`, inline: true }
     ]
   }
 

@@ -13,16 +13,16 @@ class VACommand extends BaseCommand {
 
   async execute() {
     if (!this.args || this.args.length < 1) {
-      return this.reply("Try searching the name of a character: " + this.helpDescription);
+      return this.reply({ content: "Try searching the name of a character: " + this.helpDescription });
     }
 
     const name = this.args.join(" ");
     this.va = new CharVA(name, this.language);
     if (await this.va.search() == null) {
-      return this.reply("Something went wrong or no character was found!");
+      return this.reply({ content: "Something went wrong or no character was found!" });
     }
     const embed = await this.getEmbed();
-    this.botMessage = await this.reply(embed);
+    this.botMessage = await this.reply({ embeds: [embed] });
 
     if (this.va.searchResult.length > 1) {
       await this.addPreviousAndNextReactions();

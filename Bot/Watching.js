@@ -12,13 +12,13 @@ module.exports = class Watching {
 
   async getEpisodes() {
     this.watching = await this.getWatchingAnime()
-    if (this.watching == null ) return null;
+    if (this.watching == null) return null;
     return await this.getEpisodesOfWatchingAnime();
   }
 
   async getAiringEpisodes() {
     let watching = await this.getWatchingAnime();
-    if (watching == null ) return null;
+    if (watching == null) return null;
     this.watching = watching.filter(this.isAiring)
     return await this.getEpisodesOfWatchingAnime();
   }
@@ -57,14 +57,14 @@ module.exports = class Watching {
       .setColor(this.user.getAniListProfileColor())
       //.setThumbnail(this.user.anilist.avatar.large)
       .addFields(this.makeAnimeFields())
-      .setFooter(`${this.user.discord.username} as ${this.user.anilist.name}`, this.user.getDiscordAvatarUrl())
+      .setFooter({ text: `${this.user.discord.username} as ${this.user.anilist.name}`, iconURL: this.user.getDiscordAvatarUrl() })
     return embed;
   }
 
   makeAnimeFields() {
     const fields = []
     for (let i in this.watching) {
-      const watched = this.watching[i];      
+      const watched = this.watching[i];
       const anime = this.episodes[watched.mediaId];
       if (anime == null) continue;
 
@@ -78,10 +78,10 @@ module.exports = class Watching {
 
   makeAiringAnimeField(anime, watched) {
     // if (watched.progress >= anime.nextAiringEpisode.episode) return null;
-    const bold = watched.progress < anime.nextAiringEpisode.episode -1?
-                  "**"
-                  : ""
-    return { 
+    const bold = watched.progress < anime.nextAiringEpisode.episode - 1 ?
+      "**"
+      : ""
+    return {
       name: `${bold}${anime.title.romaji}${bold}`,
       value: `[${bold}Ep. ${anime.nextAiringEpisode.episode} in ${Utils.parseTimeLeft(anime.nextAiringEpisode.timeUntilAiring)}${bold}](${anime.siteUrl}) | ${bold}${watched.progress}/${anime.episodes || "?"} eps${bold} ${Utils.parseUpdateTime(watched.updatedAt)}`,
       inline: true,
@@ -89,11 +89,10 @@ module.exports = class Watching {
   }
 
   makeCompletedAnimeField(anime, watched) {
-    return { 
+    return {
       name: `${anime.title.romaji}`,
       value: `${watched.progress}/${anime.episodes || "?"} eps ${Utils.parseUpdateTime(watched.updatedAt)}`,
       inline: true,
     }
   }
 }
-  

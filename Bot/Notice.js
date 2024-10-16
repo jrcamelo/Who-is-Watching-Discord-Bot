@@ -14,14 +14,14 @@ module.exports = class Notice {
 
   async sendMessageInChannel() {
     await this.getWatchingAnime()
-    if (Utils.isEmpty(this.watchlist)) { 
-      return 
+    if (Utils.isEmpty(this.watchlist)) {
+      return
     }
     const guild = await Bot.client.guilds.cache.get(this.guild);
     if (guild == null) return
     const channel = await guild.channels.cache.get(this.channel);
     if (channel == null) return
-    await channel.send(this.makeEmbed())
+    await channel.send({ embeds: [this.makeEmbed()] })
   }
 
   async getWatchingAnime() {
@@ -30,11 +30,11 @@ module.exports = class Notice {
     return this.watchlist;
   }
 
-  async updateWatchingAnime(previous=null, page=1) {
+  async updateWatchingAnime(previous = null, page = 1) {
     if (this.hasNextPage(previous)) {
       let watching = await AniList.watching.animeFromEveryUser(this.users, page);
       this.updateWatchlist(watching.Page.Watching)
-      return this.updateWatchingAnime(watching, page+1)
+      return this.updateWatchingAnime(watching, page + 1)
     }
   }
 
@@ -66,7 +66,7 @@ module.exports = class Notice {
     return embed;
   }
 
-   makeAnimeFields() {
+  makeAnimeFields() {
     const fields = []
     Object.entries(this.watchlist).forEach(([id, anime]) => {
       const field = this.makeAiringAnimeField(anime);
@@ -76,7 +76,7 @@ module.exports = class Notice {
   }
 
   makeAiringAnimeField(anime) {
-    return { 
+    return {
       name: `${anime.media.title.romaji}`,
       value: `[Ep. ${anime.media.nextAiringEpisode.episode}/${anime.media.episodes || "?"} in ${Utils.parseTimeLeft(anime.media.nextAiringEpisode.timeUntilAiring)}](${anime.media.siteUrl})`,
       inline: true,
@@ -84,4 +84,3 @@ module.exports = class Notice {
   }
 
 }
-  

@@ -19,7 +19,7 @@ class Who {
         if (!users) { throw new Error("Users not provided!"); }
         if (!anime) { throw new Error("Anime is not provided!"); }
         return this.util.send(`query ($users: [Int], $anime: Int) { 
-          Page (page: 1, perPage: 14) { 
+          Page (page: 1, perPage: 30) { 
             mediaList (
               userId_in: $users, 
               type: ANIME, 
@@ -50,7 +50,7 @@ class Who {
         if (!users) { throw new Error("Users not provided!"); }
         if (!manga) { throw new Error("Manga is not provided!"); }
         return this.util.send(`query ($users: [Int], $manga: Int) { 
-          Page (page: 1, perPage: 14) { 
+          Page (page: 1, perPage: 30) { 
             mediaList (
               userId_in: $users, 
               type: MANGA, 

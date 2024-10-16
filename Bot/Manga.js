@@ -26,7 +26,7 @@ class Manga extends Media {
       .addFields(this.makeReleasedFields())
       .addFields(await this.makeReadingFields())
       .setImage(this.media.bannerImage)
-      .setFooter(`${this.index + 1}/${this.searchResult.length}`)
+      .setFooter({ text: `${this.index + 1}/${this.searchResult.length}` })
     return embed;
   }
 
@@ -37,15 +37,15 @@ class Manga extends Media {
       .setURL(this.media.siteUrl)
       .setThumbnail(this.media.coverImage.large)
       .addFields(await this.makeReadingFields())
-      .setFooter(`${this.index + 1}/${this.searchResult.length}`)
+      .setFooter({ text: `${this.index + 1}/${this.searchResult.length}` })
     return embed;
   }
 
   makeReleasedFields() {
     const fields = []
     const chaptersOrStatus = this.media.chapters != null ?
-        `${this.media.chapters} chapters`
-        : `${this.media.status}`;
+      `${this.media.chapters} chapters`
+      : `${this.media.status}`;
     fields.push({ name: this.media.format, value: chaptersOrStatus, inline: true })
 
     let startDate = "Unknown"
@@ -53,14 +53,14 @@ class Manga extends Media {
     if (start.year != null && start.month != null && start.day != null) {
       startDate = `${start.year}-${start.month}-${start.day}`
     }
-    fields.push({ name: "Start date", value: startDate, inline: true});
+    fields.push({ name: "Start date", value: startDate, inline: true });
 
     let endDate = "Unknown"
     const end = this.media.endDate;
     if (end.year != null && end.month != null && end.day != null) {
       endDate = `${end.year}-${end.month}-${end.day}`
     }
-    fields.push({ name: "End date", value: endDate, inline: true});
+    fields.push({ name: "End date", value: endDate, inline: true });
 
     return fields;
   }
@@ -68,30 +68,30 @@ class Manga extends Media {
   async makeReadingFields() {
     const usersReading = await this.sortedWhoIsWatching();
     const fields = []
-    while(usersReading.length > 0) {
+    while (usersReading.length > 0) {
       const reading = usersReading.pop()
       const updateTime = Utils.parseUpdateTime(reading.updatedAt);
       const score = this.getFormattedScore(reading);
-      switch(reading.status) {
+      switch (reading.status) {
         case "CURRENT":
-          fields.push({ 
-              name: reading.user.name + " - Reading", 
-              value: `Ch. ${reading.progress} ${updateTime}.`, 
-              inline: true 
+          fields.push({
+            name: reading.user.name + " - Reading",
+            value: `Ch. ${reading.progress} ${updateTime}.`,
+            inline: true
           });
           break
         case "COMPLETED":
-          fields.push({ 
-              name: reading.user.name + " - Completed", 
-              value: `${score} ${updateTime}.`, 
-              inline: true 
+          fields.push({
+            name: reading.user.name + " - Completed",
+            value: `${score} ${updateTime}.`,
+            inline: true
           });
           break;
         default:
-          fields.push({ 
-              name: reading.user.name + " - " + reading.status, 
-              value: `Ch. ${reading.progress} ${score}.`, 
-              inline: true 
+          fields.push({
+            name: reading.user.name + " - " + reading.status,
+            value: `Ch. ${reading.progress} ${score}.`,
+            inline: true
           });
           break;
       }

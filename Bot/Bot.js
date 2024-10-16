@@ -13,8 +13,17 @@ class Bot {
   static async initialize() {
     console.log("Initializing bot...");
     Bot.db = new Database();
-    Bot.client = new Discord.Client();
-    Bot.client.on("message", async function(message) {
+    Bot.client = new Discord.Client({
+      intents:
+        Discord.Intents.FLAGS.GUILDS |
+        Discord.Intents.FLAGS.GUILD_MESSAGES |
+        Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS |
+        Discord.Intents.FLAGS.DIRECT_MESSAGES |
+        Discord.Intents.FLAGS.MESSAGE_CONTENT |
+        Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS
+    });
+
+    Bot.client.on("messageCreate", async function (message) {
       Bot.readMessage(message);
     });
     Bot.client.on('rateLimit', (info) => {
@@ -25,7 +34,7 @@ class Bot {
     });
     await Bot.client.login(process.env.BOT_TOKEN);
     await Bot.setStatus();
-    Bot.scheduleCronJob();    
+    Bot.scheduleCronJob();
 
     console.log("Bot is now watching.");
     // Testing
@@ -34,11 +43,11 @@ class Bot {
 
   static async setStatus() {
     await Bot.client.user.setPresence({
-        status: "online",
-        activity: {
-            name: "w.help",
-            type: "WATCHING",
-        }
+      status: "online",
+      activity: {
+        name: "w.help",
+        type: "WATCHING",
+      }
     });
   }
 
@@ -50,13 +59,13 @@ class Bot {
           return command.tryExecute();
         }
       }
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
   }
 
   static scheduleCronJob() {
-    Cron.schedule("0 */8 * * *", function() {
+    Cron.schedule("0 */8 * * *", function () {
       const NoticeManager = require("./NoticeManager");
       NoticeManager.executeCronjobs();
     });

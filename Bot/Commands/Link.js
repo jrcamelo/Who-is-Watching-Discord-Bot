@@ -12,7 +12,7 @@ class LinkCommand extends BaseCommand {
 
   async execute() {
     if (this.message.guild == null) {
-      return this.reply("This command does not work on DMs");
+      return this.reply({ content: "This command does not work on DMs" });
     }
 
     this.user = new User();
@@ -23,7 +23,7 @@ class LinkCommand extends BaseCommand {
 
     const anilistUsername = this.args.join("").trim();
     if (!await this.user.setAniListFromUsername(anilistUsername)) {
-      return this.reply("Could not find AniList user with username: " + anilistUsername);
+      return this.reply({ content: "Could not find AniList user with username: " + anilistUsername });
     }
     await this.user.saveLinkedUser();
     await this.user.saveUserToGuild();
@@ -32,7 +32,7 @@ class LinkCommand extends BaseCommand {
 
   async noArgs() {
     if (await this.user.setAniListFromDiscord() == null) {
-      return this.reply("Add your AniList username after the command\n" + LinkCommand.helpDescription)
+      return this.reply({ content: "Add your AniList username after the command\n" + LinkCommand.helpDescription })
     }
     await this.user.saveUserToGuild();
     return this.makeEmbed();
@@ -40,7 +40,7 @@ class LinkCommand extends BaseCommand {
 
   async makeEmbed() {
     const embed = this.user.makeAniListProfileEmbed();
-    return this.reply(embed);
+    return this.reply({ embeds: [embed] });
   }
 
 }

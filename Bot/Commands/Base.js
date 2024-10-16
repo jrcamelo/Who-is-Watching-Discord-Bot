@@ -24,7 +24,7 @@ class BaseCommand {
     // this.addWatchingReactionToMessage();
 
     this.reactions = {
-      [BaseCommand.deleteReactionEmoji]: this.deleteReply,      
+      [BaseCommand.deleteReactionEmoji]: this.deleteReply,
     }
     this.reactionFilter = (reaction, user) => {
       console.log(reaction.emoji.name);
@@ -39,7 +39,7 @@ class BaseCommand {
   async tryExecute() {
     try {
       await this.execute();
-    } catch(e) {
+    } catch (e) {
       console.log("\n" + this.message.content + " caused an error at " + new Date())
       console.log(e);
       console.log("\n")
@@ -52,40 +52,40 @@ class BaseCommand {
 
   async waitReplyReaction() {
     const options = { max: 1, time: 30000, errors: ['time'] };
-    this.reply.awaitReactions(this.reactionFilter, options)
+    this.reply.awaitReactions({ filter: this.reactionFilter, ...options })
       .then(collected => {
-          this.reactions[collected.first().emoji](collected.first(), this); 
-        }) 
+        this.reactions[collected.first().emoji](collected.first(), this);
+      })
       .catch(collected => {
-          this.reply.reactions.removeAll();
+        this.reply.reactions.removeAll();
       });
   }
 
   async deleteReply(collected, _command) {
-    try { collected.message.delete(); } catch (e) {}
+    try { collected.message.delete(); } catch (e) { }
   }
 
-  async reply(botMessage, mention=false, shouldDelete=true) {
-    if (botMessage && typeof(botMessage) != typeof("")) {
+  async reply(botMessage, mention = false, shouldDelete = true) {
+    if (botMessage && typeof (botMessage) != typeof ("")) {
       botMessage.footer = this.addCommandFooter(botMessage);
       if (shouldDelete) {
-        try { await this.message.delete(); } catch(e) { }
+        try { await this.message.delete(); } catch (e) { }
       }
     }
-    
+
     this.reply = mention ?
       await this.message.reply(botMessage)
       : await this.message.channel.send(botMessage)
     await this.addDeleteReactionToReply();
     await this.waitReplyReaction();
-    return this.reply;    
+    return this.reply;
   }
 
   addCommandFooter(botMessage) {
     if (!botMessage.footer) {
-      return { 
+      return {
         text: `"${this.message.content}" by ${this.message.author.username}`,
-        iconURL: User.makeDiscordAvatarUrl(this.message.author) 
+        iconURL: User.makeDiscordAvatarUrl(this.message.author)
       }
     }
 
@@ -93,25 +93,25 @@ class BaseCommand {
     if (!botMessage.footer.iconURL) {
       botMessage.footer.iconURL = User.makeDiscordAvatarUrl(this.message.author);
     }
-    return botMessage.footer;    
+    return botMessage.footer;
   }
 
   async makeAnilistUserFromMessageOrMention() {
-    if (!this.message) { 
+    if (!this.message) {
       return false;
     }
     const user = new User();
     if (this.isArgsBlank()) {
       await user.setDiscordFromMessage(this.message);
       if (!await user.setAniListFromDiscord()) {
-        await this.reply("AniList user not found, maybe you need to link your account with w.link <Your AniList username>");
+        await this.reply({ content: "AniList user not found, maybe you need to link your account with w.link <Your AniList username>" });
         return false;
       }
     } else {
       const id = this.args.join(" ");
       await user.setDiscordFromSearch(this.message, id);
       if (!await user.setAniListFromDiscord()) {
-        await this.reply("AniList user not found, maybe they need to link their account with w.link <AniList username> or your mention failed.");
+        await this.reply({ content: "AniList user not found, maybe they need to link their account with w.link <AniList username> or your mention failed." });
         return false;
       }
     }
@@ -121,7 +121,7 @@ class BaseCommand {
   addDeleteReactionToReply() {
     return this.reply.react(BaseCommand.deleteReactionEmoji);
   }
-  
+
   isArgsBlank() {
     return !this.args.length;
   }

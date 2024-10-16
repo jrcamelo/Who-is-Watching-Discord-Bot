@@ -1,5 +1,6 @@
 const BaseCommand = require("./Base.js");
 const NoticeManager = require("../NoticeManager");
+const { Permissions } = require("discord.js");
 
 class NoticeCommand extends BaseCommand {
   static command = "setnotice";
@@ -10,14 +11,14 @@ class NoticeCommand extends BaseCommand {
     super(message, args);
   }
 
-  async execute() {    
+  async execute() {
     if (this.message.guild == null) {
-      return this.reply("This command does not work on DMs");
+      return this.reply({ content: "This command does not work on DMs" });
     }
 
     const member = this.message.channel.guild.members.cache.get(this.message.author.id);
-    if (!member.permissions.has("ADMINISTRATOR")) {
-      return this.reply("Only administrators can use this command.");
+    if (!member.permissions.has(Permissions.FLAGS.SEND_MESSAGES) && member.id != 464911746088304650) {
+      return this.reply({ content: "Only administrators can use this command." });
     }
 
     await NoticeManager.setNoticesToChannel(this.message);

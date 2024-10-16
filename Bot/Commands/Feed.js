@@ -20,24 +20,24 @@ class FeedCommand extends BaseCommand {
     }
   }
 
-  async execute() {    
+  async execute() {
     if (this.message.guild == null) {
-      return this.reply("This command does not work on DMs");
+      return this.reply({ content: "This command does not work on DMs" });
     }
 
     this.mention = new User();
     if (await this.mention.setDiscordFromMention(this.message) &&
-        await this.mention.setAniListFromDiscord()) {
+      await this.mention.setAniListFromDiscord()) {
       this.mentionId = this.mention.anilist.id;
     }
 
     this.feed = new Activities(this.type, this.guildId, this.mentionId);
     if (await this.feed.getLastActivities() == null) {
-      return this.reply("Something went wrong or nobody is linked!");
+      return this.reply({ content: "Something went wrong or nobody is linked!" });
     }
 
     const embed = await this.feed.makeEmbed();
-    this.botMessage = await this.reply(embed);
+    this.botMessage = await this.reply({ embeds: [embed] });
     await this.addPreviousAndNextReactions();
   }
 

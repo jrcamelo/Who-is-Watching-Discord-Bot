@@ -73,12 +73,12 @@ module.exports = class SauceNao {
         return link;
       }
     }
-  }  
+  }
 
   async search() {
     try {
       this.searchResult = await Sauce(this.image);
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
     if (!this.searchResult) return null;
@@ -107,9 +107,9 @@ module.exports = class SauceNao {
       .setThumbnail(this.image)
       .setImage(this.sauce.thumbnail)
       .addFields([this.makeSimilarityField()])
-      .setFooter(`${this.index + 1}/${this.searchResult.length} - ${siteUrl}`)
+      .setFooter({ text: `${this.index + 1}/${this.searchResult.length} - ${siteUrl}` })
     const authorField = this.makeAuthorField();
-    if (authorField) { 
+    if (authorField) {
       embed.addFields([authorField]);
     }
     return await embed;
@@ -120,7 +120,7 @@ module.exports = class SauceNao {
     return { name: "Confidence", value: `${similarity}%`, inline: true };
   }
 
-  makeAuthorField () {
+  makeAuthorField() {
     if (this.sauce.authorName) {
       const author = this.sauce.authorUrl ?
         `[${this.sauce.authorName}](${this.sauce.authorUrl})`

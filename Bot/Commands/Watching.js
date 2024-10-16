@@ -16,10 +16,10 @@ class WatchingCommand extends BaseCommand {
     if (!user) return;
     const watching = new Watching(user);
     if (await this.getEpisodes(watching) == null) {
-      return this.reply("Either you are not watching any anime or there was an error somewhere.");
+      return this.reply({ content: "Either you are not watching any anime or there was an error somewhere." });
     }
     const embed = watching.makeEmbed();
-    return this.reply(embed)
+    return this.reply({ embeds: [embed] })
   }
 
   async getEpisodes(watching) {

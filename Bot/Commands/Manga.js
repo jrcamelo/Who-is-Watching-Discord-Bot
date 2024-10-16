@@ -13,16 +13,16 @@ class MangaCommand extends BaseCommand {
 
   async execute() {
     if (!this.args || this.args.length < 1) {
-      return this.reply("Try adding part of a title of a manga, as such: " + this.helpDescription);
+      return this.reply({ content: "Try adding part of a title of a manga, as such: " + this.helpDescription });
     }
 
     const title = this.args.join(" ");
     this.manga = new Manga(title, this.guildId);
     if (await this.manga.search() == null) {
-      return this.reply("Something went wrong or no manga with that title was found!");
+      return this.reply({ content: "Something went wrong or no manga with that title was found!" });
     }
     const embed = await this.getMangaEmbed();
-    this.botMessage = await this.reply(embed);
+    this.botMessage = await this({ embeds: [embed] });
 
     if (this.manga.searchResult.length > 1) {
       await this.addPreviousAndNextReactions();

@@ -28,7 +28,7 @@ class Anime extends Media {
       .addFields(this.makeAiredFields())
       .addFields(this.makeAiringOrCompletedFields())
       .addFields(await this.makeWatchingFields())
-      .setFooter(`${this.index + 1}/${this.searchResult.length}`,Bot.getProfilePicture())
+      .setFooter({ text: `${this.index + 1}/${this.searchResult.length}`, iconURL: Bot.getProfilePicture() })
     embed = addAnimeTriviaFooter(embed);
     return embed;
   }
@@ -39,31 +39,31 @@ class Anime extends Media {
       .setTitle(this.media.title.romaji)
       .setURL(this.media.siteUrl)
       .setThumbnail(this.media.coverImage.large)
-      .setFooter(`${this.index + 1}/${this.searchResult.length} - ` + this.makeAiringOrCompletedFooter(), Bot.getProfilePicture())
+      .setFooter({ text: `${this.index + 1}/${this.searchResult.length} - ` + this.makeAiringOrCompletedFooter(), iconURL: Bot.getProfilePicture() })
       .addFields(await this.makeWatchingFields());
     return embed;
   }
 
   makeAiredFields() {
     const fields = [
-        { name: this.media.format, value: (this.media.episodes || "?").toString() + ' episode(s)', inline: true },
-        { name: 'Aired at', value: this.media.season + " " + this.media.seasonYear, inline: true }
+      { name: this.media.format, value: (this.media.episodes || "?").toString() + ' episode(s)', inline: true },
+      { name: 'Aired at', value: this.media.season + " " + this.media.seasonYear, inline: true }
     ]
     return fields;
   }
 
   makeAiringOrCompletedFields(inline = true) {
-    if (this.media.nextAiringEpisode && 
-        this.media.nextAiringEpisode.episode != null && 
-        this.media.nextAiringEpisode.timeUntilAiring) {
+    if (this.media.nextAiringEpisode &&
+      this.media.nextAiringEpisode.episode != null &&
+      this.media.nextAiringEpisode.timeUntilAiring) {
       const nextEpisode = this.media.nextAiringEpisode.episode.toString()
       const timeLeft = Utils.parseTimeLeft(this.media.nextAiringEpisode.timeUntilAiring)
       return [
-          { name: `Episode ${nextEpisode}`, value: `${timeLeft} left`, inline: inline}
+        { name: `Episode ${nextEpisode}`, value: `${timeLeft} left`, inline: inline }
       ];
     } else {
       return [
-          { name: this.media.status, value: "No airing episodes", inline: inline}
+        { name: this.media.status, value: "No airing episodes", inline: inline }
       ];
     }
   }
@@ -81,11 +81,11 @@ class Anime extends Media {
 
   async makeWatchingFields() {
     const usersWatching = await this.sortedWhoIsWatching();
-    
+
     let watchList = { name: "Watching: ", count: 0, value: "", inline: true };
     let completeList = { name: "Completed: ", count: 0, value: "", inline: true };
     let otherList = { name: "Others: ", count: 0, value: "", inline: true };
-    while(usersWatching.length > 0) {
+    while (usersWatching.length > 0) {
       const watching = usersWatching.pop()
       let updateTime = Utils.parseUpdateTime(watching.updatedAt);
       // if (watching.completedAt) {
@@ -97,23 +97,23 @@ class Anime extends Media {
       // }
       const score = this.getFormattedScore(watching);
       const repeat = watching.repeat ?
-          ` (${watching.repeat + 1}x)`
-          : "";
-      switch(watching.status) {
-        case "CURRENT":  
-          watchList = this.addToList(watchList, 
-              `**${watching.user.name}**${repeat}: Ep. ${watching.progress}${updateTime}`)
+        ` (${watching.repeat + 1}x)`
+        : "";
+      switch (watching.status) {
+        case "CURRENT":
+          watchList = this.addToList(watchList,
+            `**${watching.user.name}**${repeat}: Ep. ${watching.progress}${updateTime}`)
           break
-        case "REPEATING":    
-          watchList = this.addToList(watchList, 
-              `**${watching.user.name}**${repeat}: Rewatch Ep. ${watching.progress}${updateTime}`)
+        case "REPEATING":
+          watchList = this.addToList(watchList,
+            `**${watching.user.name}**${repeat}: Rewatch Ep. ${watching.progress}${updateTime}`)
           break
         case "COMPLETED":
-          completeList = this.addToList(completeList, 
-              `**${watching.user.name}**${repeat}:${score}${updateTime}`)
+          completeList = this.addToList(completeList,
+            `**${watching.user.name}**${repeat}:${score}${updateTime}`)
           break;
         default:
-          otherList = this.addToList(otherList, 
+          otherList = this.addToList(otherList,
             `**${watching.user.name}**: ${watching.status}${score}`)
           break;
       }
