@@ -36,6 +36,7 @@ class Manga extends Media {
       .setTitle(this.media.title.romaji)
       .setURL(this.media.siteUrl)
       .setThumbnail(this.media.coverImage.large)
+      .addFields(this.makeReleasedFields())
       .addFields(await this.makeReadingFields())
       .setFooter({ text: `${this.index + 1}/${this.searchResult.length}` })
     return embed;

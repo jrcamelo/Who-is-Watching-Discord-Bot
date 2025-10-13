@@ -48,7 +48,7 @@ class VACommand extends BaseCommand {
 
   async refreshChar() {
     const embed = await this.getEmbed();
-    await this.botMessage.edit(embed);
+    await this.botMessage.edit({ embeds: [embed] });
     await this.waitReplyReaction();
   }
 

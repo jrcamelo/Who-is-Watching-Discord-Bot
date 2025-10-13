@@ -48,7 +48,7 @@ class AnimeCommand extends BaseCommand {
 
   async refreshAnime() {
     const embed = await this.getAnimeEmbed();
-    await this.botMessage.edit(embed);
+    await this.botMessage.edit({ embeds: [embed] });
     await this.waitReplyReaction();
   }
 

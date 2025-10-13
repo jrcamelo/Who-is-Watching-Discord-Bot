@@ -61,7 +61,7 @@ class FeedCommand extends BaseCommand {
 
   async refreshEmbed() {
     const embed = await this.feed.makeEmbed();
-    await this.botMessage.edit(embed);
+    await this.botMessage.edit({ embeds: [embed] });
     await this.waitReplyReaction();
   }
 }

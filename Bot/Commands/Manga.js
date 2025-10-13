@@ -22,7 +22,7 @@ class MangaCommand extends BaseCommand {
       return this.reply({ content: "Something went wrong or no manga with that title was found!" });
     }
     const embed = await this.getMangaEmbed();
-    this.botMessage = await this({ embeds: [embed] });
+    this.botMessage = await this.reply({ embeds: [embed] });
 
     if (this.manga.searchResult.length > 1) {
       await this.addPreviousAndNextReactions();
@@ -48,7 +48,7 @@ class MangaCommand extends BaseCommand {
 
   async refreshManga() {
     const embed = await this.getMangaEmbed();
-    await this.botMessage.edit(embed);
+    await this.botMessage.edit({ embeds: [embed] });
     await this.waitReplyReaction();
   }
 

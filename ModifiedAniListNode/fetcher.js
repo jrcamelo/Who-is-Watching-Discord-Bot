@@ -26,15 +26,15 @@ function nameEditor(obj) {
 function edgeRemove(obj) {
     var list = [];
     for (var x = 0; x < obj.length; x++) {
-        if (obj[x].name) { 
-            obj[x].name = obj[x].name.english || obj[x].name.full; 
+        if (obj[x].name) {
+            obj[x].name = obj[x].name.english || obj[x].name.full;
         }
 
         if (obj[x].node) { list.push(obj[x].node); }
         else if (obj[x].id && obj[x].length === 1) { list.push(obj[x].id); }
         else if (obj[x].url) { list.push(obj[x].url); }
         else { list.push(obj[x]); }
-    }; 
+    };
 
     if (list.length < 1) { list = null; }
     return list;
@@ -68,7 +68,7 @@ async function formatMedia(media) {
     media.recommendations = media.recommendations.nodes;
     media.relations = media.relations.nodes;
     media.trends = media.trends.nodes;
-    
+
     if (media.synonyms.length < 1) { media.synonyms = null; }
 
     if (media.trailer) {
@@ -77,36 +77,36 @@ async function formatMedia(media) {
             case "dailymotion": media.trailer = `https://www.dailymotion.com/video/${media.trailer.id}`; break;
             case undefined: media.trailer = null; break;
             default: media.trailer = media.trailer; break;
-        } 
+        }
     }
     return media;
 }
 
 module.exports = {
-  /**
-   * Send a call to the AniList API with a query and variables.
-   * @param { String } query 
-   * @param { Object } variables 
-   * @returns { Object } Returns a customized object containing all of the data fetched.
-   */
-  send: async function(query, variables) {
-    if (!query || !variables) { throw new Error("Query or variables are not given!"); }
-    var options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({ query: query, variables: variables })
-    };
-    console.log(variables)
-    if (this.key) { options.headers.Authorization = `Bearer ${this.key}`; }
-    var response = await fetch("https://graphql.anilist.co", options);
-    var json = await response.json();
+    /**
+     * Send a call to the AniList API with a query and variables.
+     * @param { String } query 
+     * @param { Object } variables 
+     * @returns { Object } Returns a customized object containing all of the data fetched.
+     */
+    send: async function (query, variables) {
+        if (!query || !variables) { throw new Error("Query or variables are not given!"); }
+        var options = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({ query: query, variables: variables })
+        };
+        // console.log(variables)
+        if (this.key) { options.headers.Authorization = `Bearer ${this.key}`; }
+        var response = await fetch("https://graphql.anilist.co", options);
+        var json = await response.json();
 
-    if (json.errors && json.errors[0].status === 404) { return { data: null, status: 404, message: "Search item by that term is not found." } }
-    if (json.data === null) { return { data: null, status: json.errors[0].status, message: json.errors[0].message } } 
+        if (json.errors && json.errors[0].status === 404) { return { data: null, status: 404, message: "Search item by that term is not found." } }
+        if (json.data === null) { return { data: null, status: json.errors[0].status, message: json.errors[0].message } }
 
-    return json.data;
-  }
+        return json.data;
+    }
 };

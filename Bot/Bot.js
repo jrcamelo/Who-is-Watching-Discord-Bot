@@ -38,7 +38,7 @@ class Bot {
 
     console.log("Bot is now watching.");
     // Testing
-    console.log(await Bot.db.getAll())
+    // console.log(await Bot.db.getAll())
   }
 
   static async setStatus() {

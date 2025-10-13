@@ -27,7 +27,7 @@ class BaseCommand {
       [BaseCommand.deleteReactionEmoji]: this.deleteReply,
     }
     this.reactionFilter = (reaction, user) => {
-      console.log(reaction.emoji.name);
+      // console.log(reaction.emoji.name);
       return this.reactions[reaction.emoji.name] != null;
     };
   }

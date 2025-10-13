@@ -132,15 +132,15 @@ module.exports = class CharVA {
       characters.push(char);
     }
     characters.sort((a, b) => (b.favourites - a.favourites));
-    console.log(characters[0])
-    console.log(characters[1])
-    console.log(characters[2])
-    console.log(characters[3])
-    console.log(characters[4])
-    console.log(characters[5])
-    console.log(characters[6])
-    console.log(characters[7])
-    console.log(characters[8])
+    // console.log(characters[0])
+    // console.log(characters[1])
+    // console.log(characters[2])
+    // console.log(characters[3])
+    // console.log(characters[4])
+    // console.log(characters[5])
+    // console.log(characters[6])
+    // console.log(characters[7])
+    // console.log(characters[8])
     return characters;
   }
 }

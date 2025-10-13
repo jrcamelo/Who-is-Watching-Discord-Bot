@@ -44,11 +44,11 @@ module.exports = class Database {
     const ids = []
     const guild = await this.getGuildDiscordUsers(guildId, prefix) || {};
     for (let discordId in guild) {
-      console.log(discordId)
+      // console.log(discordId)
       ids.push(guild[discordId]);
     }
-    console.log(guild)
-    console.log(ids)
+    // console.log(guild)
+    // console.log(ids)
     return ids;
   }
 
