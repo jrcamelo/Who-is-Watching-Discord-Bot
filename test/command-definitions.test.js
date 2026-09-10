@@ -3,6 +3,7 @@ const assert = require("node:assert/strict");
 const { PermissionFlagsBits } = require("discord.js");
 const definitions = require("../Bot/CommandDefinitions");
 const { _test } = require("../Bot/SlashCommands");
+const Media = require("../Bot/Media");
 
 const commands = definitions.map(command => command.toJSON());
 
@@ -43,4 +44,11 @@ test("uses compact responses by default and private responses only when requeste
   assert.equal(_test.compactReply({ options: options({ compact: false }) }), false);
   assert.equal(_test.privateReply({ options: options({}) }), false);
   assert.equal(_test.privateReply({ options: options({ private: true }) }), true);
+});
+
+test("treats AniList API error payloads as command failures, not exceptions", async () => {
+  const media = new Media("test", "guild");
+  media.getSearchResults = async () => ({ data: null, status: 403, message: "AniList is unavailable." });
+  assert.equal(await media.search(), null);
+  assert.equal(media.error, "AniList is unavailable.");
 });

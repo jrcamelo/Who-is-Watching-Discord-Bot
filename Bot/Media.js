@@ -16,7 +16,10 @@ module.exports = class Media {
   async search() {
     const media = await this.getSearchResults();
     // console.log(JSON.stringify(media))
-    if (media == null || !media.Page.media) return null
+    if (media == null || !media.Page || !media.Page.media) {
+      this.error = media?.message;
+      return null;
+    }
     this.searchResult = media.Page.media;
     this.index = 0;
     this.media = this.searchResult[this.index];

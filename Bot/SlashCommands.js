@@ -4,6 +4,7 @@ const {
   ButtonStyle,
   Collection,
   EmbedBuilder,
+  MessageFlags,
   PermissionFlagsBits,
 } = require("discord.js");
 const User = require("./User");
@@ -45,7 +46,7 @@ async function linkedUser(interaction, target = interaction.user) {
 }
 
 async function defer(interaction, ephemeral = false) {
-  await interaction.deferReply({ ephemeral });
+  await interaction.deferReply(ephemeral ? { flags: MessageFlags.Ephemeral } : {});
 }
 
 async function fail(interaction, message) {
@@ -66,7 +67,7 @@ async function paginatedReply(interaction, makeEmbed, previous, next) {
 
   collector.on("collect", async component => {
     if (component.user.id !== interaction.user.id) {
-      await component.reply({ content: "Only the command invoker can change this page.", ephemeral: true }).catch(() => {});
+      await component.reply({ content: "Only the command invoker can change this page.", flags: MessageFlags.Ephemeral }).catch(() => {});
       return;
     }
     await component.deferUpdate();
@@ -76,7 +77,7 @@ async function paginatedReply(interaction, makeEmbed, previous, next) {
       await message.edit({ embeds: [await makeEmbed()], components: [navigationRow(id)] });
     } catch (error) {
       console.error("Pagination update failed:", error);
-      await component.followUp({ content: "Could not update this result.", ephemeral: true }).catch(() => {});
+      await component.followUp({ content: "Could not update this result.", flags: MessageFlags.Ephemeral }).catch(() => {});
     }
   });
   collector.on("end", () => message.edit({ components: [navigationRow(id, true)] }).catch(() => {}));
@@ -107,7 +108,7 @@ async function executeMedia(interaction, Type) {
   const ephemeral = privateReply(interaction);
   await defer(interaction, ephemeral);
   const media = new Type(interaction.options.getString("title", true), interaction.guildId);
-  if (!await media.search()) return fail(interaction, "No matching result was found.");
+  if (!await media.search()) return fail(interaction, media.error || "No matching result was found.");
   const makeEmbed = () => compactReply(interaction) ? media.makeEmbedCompact() : media.makeEmbed();
   if (media.searchResult.length < 2) return interaction.editReply({ embeds: [await makeEmbed()] });
   return paginatedReply(interaction, makeEmbed, () => media.previousSearchResult(), () => media.nextSearchResult());
@@ -214,23 +215,23 @@ async function handle(interaction) {
   if (!interaction.isChatInputCommand() || !interaction.inGuild()) return;
   try {
     switch (interaction.commandName) {
-      case "link": return executeLink(interaction);
-      case "profile": return executeProfile(interaction);
-      case "anime": return executeMedia(interaction, Anime);
-      case "manga": return executeMedia(interaction, Manga);
-      case "watching": return executeWatching(interaction, false);
-      case "airing": return executeWatching(interaction, true);
-      case "feed": return executeFeed(interaction);
-      case "voice-actor": return executeVoiceActor(interaction);
-      case "notice": return executeNotice(interaction);
-      case "trace": return executeTrace(interaction);
-      case "sauce": return executeSauce(interaction);
-      case "three-by-three": return executeThreeByThree(interaction);
-      case "help": return executeHelp(interaction);
+      case "link": return await executeLink(interaction);
+      case "profile": return await executeProfile(interaction);
+      case "anime": return await executeMedia(interaction, Anime);
+      case "manga": return await executeMedia(interaction, Manga);
+      case "watching": return await executeWatching(interaction, false);
+      case "airing": return await executeWatching(interaction, true);
+      case "feed": return await executeFeed(interaction);
+      case "voice-actor": return await executeVoiceActor(interaction);
+      case "notice": return await executeNotice(interaction);
+      case "trace": return await executeTrace(interaction);
+      case "sauce": return await executeSauce(interaction);
+      case "three-by-three": return await executeThreeByThree(interaction);
+      case "help": return await executeHelp(interaction);
     }
   } catch (error) {
     console.error(`Slash command ${interaction.commandName} failed:`, error);
-    const payload = { content: "An unexpected error occurred.", ephemeral: true };
+    const payload = { content: "An unexpected error occurred.", flags: MessageFlags.Ephemeral };
     if (interaction.deferred) return interaction.editReply({ content: payload.content, embeds: [], components: [] }).catch(() => {});
     if (interaction.replied) return interaction.followUp(payload).catch(() => {});
     return interaction.reply(payload).catch(() => {});
