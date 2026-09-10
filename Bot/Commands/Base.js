@@ -119,7 +119,8 @@ class BaseCommand {
   }
 
   addDeleteReactionToReply() {
-    return this.reply.react(BaseCommand.deleteReactionEmoji);
+    return
+    // return this.reply.react(BaseCommand.deleteReactionEmoji);
   }
 
   isArgsBlank() {
