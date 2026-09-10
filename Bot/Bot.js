@@ -1,6 +1,5 @@
 require('dotenv').config()
 const Discord = require("discord.js");
-const Parser = require("./Parser.js");
 const Database = require("./Database");
 const Cron = require('node-cron');
 
@@ -9,25 +8,23 @@ class Bot {
   static client;
   static timer;
   static lastValidChannel;
+  static cronRunning = false;
 
   static async initialize() {
     console.log("Initializing bot...");
+    const SlashCommands = require("./SlashCommands");
     Bot.db = new Database();
     Bot.client = new Discord.Client({
-      intents:
-        Discord.Intents.FLAGS.GUILDS |
-        Discord.Intents.FLAGS.GUILD_MESSAGES |
-        Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS |
-        Discord.Intents.FLAGS.DIRECT_MESSAGES |
-        Discord.Intents.FLAGS.MESSAGE_CONTENT |
-        Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS
+      intents: [
+        Discord.GatewayIntentBits.Guilds,
+      ],
     });
 
-    Bot.client.on("messageCreate", async function (message) {
-      Bot.readMessage(message);
+    Bot.client.on("interactionCreate", async function (interaction) {
+      await SlashCommands.handle(interaction);
     });
-    Bot.client.on('rateLimit', (info) => {
-      console.log(`Rate limit hit - diff: ${info.timeDifference} timeout: ${info.timeout}}`)
+    Bot.client.rest.on('rateLimited', (info) => {
+      console.log(`Rate limit hit - timeout: ${info.timeToReset}`)
     });
     Bot.client.on('debug', (message) => {
       console.log((new Date()).toUTCString() + message)
@@ -44,36 +41,30 @@ class Bot {
   static async setStatus() {
     await Bot.client.user.setPresence({
       status: "online",
-      activity: {
-        name: "w.help",
-        type: "WATCHING",
-      }
+      activities: [{
+        name: "/help",
+        type: Discord.ActivityType.Watching,
+      }]
     });
   }
 
-  static async readMessage(message) {
-    try {
-      if (Parser.isValidMessage(message)) {
-        const command = new Parser(message).parse();
-        if (command) {
-          return command.tryExecute();
-        }
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   static scheduleCronJob() {
-    Cron.schedule("0 */8 * * *", function () {
+    Cron.schedule("0 */8 * * *", async function () {
+      if (Bot.cronRunning) return;
+      Bot.cronRunning = true;
       const NoticeManager = require("./NoticeManager");
-      NoticeManager.executeCronjobs();
+      try {
+        await NoticeManager.executeCronjobs();
+      } catch (error) {
+        console.error("Scheduled notices failed:", error);
+      } finally {
+        Bot.cronRunning = false;
+      }
     });
   }
 
   static getProfilePicture() {
-    const url = "https://cdn.discordapp.com/avatars/"
-    return url + Bot.client.user + "/" + Bot.client.user.avatar + ".png";
+    return Bot.client.user.displayAvatarURL({ extension: "png" });
   }
 
   static getOwnerPicture() {

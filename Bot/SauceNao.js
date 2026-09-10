@@ -3,7 +3,6 @@ const API_TOKEN = process.env.SAUCENAO_TOKEN;
 
 const Sagiri = require('sagiri');
 const Discord = require('discord.js');
-const ImageFetch = require('fetch-base64')
 const Fetch = require('node-fetch');
 const IsImage = require('is-image-url')
 const Bot = require("./Bot");
@@ -24,9 +23,6 @@ module.exports = class SauceNao {
 
   async setImage() {
     this.setImageFromAttachmentOrLink();
-    if (!this.image) {
-      await this.getImageAbove();
-    }
     return this.image;
   }
 
@@ -43,34 +39,6 @@ module.exports = class SauceNao {
         this.image = this.link;
       } else {
         console.log(this.link + " is not an image");
-      }
-    }
-  }
-
-  async getImageAbove() {
-    const fetchedMessages = await this.message.channel.messages.fetch({ limit: 10 });
-    const sortedIds = [...fetchedMessages.keys()].sort().reverse();
-    for (const id of sortedIds) {
-      const message = fetchedMessages.get(id);
-      const image = this.setImageFromFetchedMessage(message);
-      if (image) {
-        this.image = image;
-        break;
-      }
-    }
-  }
-
-  setImageFromFetchedMessage(message) {
-    if (!message) return;
-    const link = message.content;
-    if (message.attachments.size > 0) {
-      const attachment = message.attachments.values().next().value.url;
-      if (IsImage(attachment)) {
-        return attachment;
-      }
-    } else {
-      if (IsImage(link)) {
-        return link;
       }
     }
   }
@@ -101,7 +69,7 @@ module.exports = class SauceNao {
   }
 
   async makeEmbed() {
-    let embed = new Discord.MessageEmbed()
+    let embed = new Discord.EmbedBuilder()
       .setTitle("Found sauce at " + this.sauce.site)
       .setURL(this.sauce.url)
       .setThumbnail(this.image)

@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-const ImageFetch = require('fetch-base64')
 const Fetch = require('node-fetch');
 const IsImage = require('is-image-url')
 const Bot = require("./Bot");
@@ -31,18 +30,7 @@ module.exports = class TraceMoe {
         console.log(this.link + " is not an image");
       }
     }
-    this.base64 = await this.convertImageToBase64();
-    if (!this.base64) return null;
     return this.image;
-  }
-
-  async convertImageToBase64() {
-    try {
-      const base64 = await ImageFetch.remote(this.image)
-      return base64[0]
-    } catch {
-      return null;
-    }
   }
 
   async searchWithImage() {
@@ -52,8 +40,6 @@ module.exports = class TraceMoe {
   }
 
   async sendPost() {
-    const body = new URLSearchParams(`image=${this.base64}`);
-    const options = { method: "POST", body }
     const post = await Fetch(`https://api.trace.moe/search?anilistInfo&url=${encodeURIComponent(this.image)}`)
     return await post.json();
   }
@@ -66,7 +52,7 @@ module.exports = class TraceMoe {
   }
 
   async makeEmbed() {
-    let embed = new Discord.MessageEmbed()
+    let embed = new Discord.EmbedBuilder()
       .setTitle(this.getTitle())
       .setURL(Utils.makeAnilistAnimeUrl(this.source.anilist.id))
       .setThumbnail(this.source.image)

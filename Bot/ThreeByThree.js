@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-const ImageFetch = require('fetch-base64')
 const Fetch = require('node-fetch');
 const IsImage = require('is-image-url')
 const Bot = require("./Bot");
@@ -98,7 +97,7 @@ module.exports = class ThreeByThree {
   }
 
   async makeEmbed() {
-    let embed = new Discord.MessageEmbed()
+    let embed = new Discord.EmbedBuilder()
       .setTitle(`${this.discord.username}'s 3x3`)
       .setImage(this.image)
     return await embed;

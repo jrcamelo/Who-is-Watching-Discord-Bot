@@ -19,7 +19,7 @@ class Anime extends Media {
   }
 
   async makeEmbed() {
-    let embed = new Discord.MessageEmbed()
+    let embed = new Discord.EmbedBuilder()
       .setColor(this.media.coverImage.color || '#0099ff')
       .setTitle(this.media.title.romaji)
       .setURL(this.media.siteUrl)
@@ -34,7 +34,7 @@ class Anime extends Media {
   }
 
   async makeEmbedCompact() {
-    const embed = new Discord.MessageEmbed()
+    const embed = new Discord.EmbedBuilder()
       .setColor(this.media.coverImage.color || '#0099ff')
       .setTitle(this.media.title.romaji)
       .setURL(this.media.siteUrl)

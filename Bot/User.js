@@ -76,7 +76,7 @@ module.exports = class User {
 
   makeAniListProfileEmbed() {
     if (this.anilist == null) return null;
-    return new Discord.MessageEmbed()
+    return new Discord.EmbedBuilder()
       .setColor(this.getAniListProfileColor())
       .setTitle(this.anilist.name)
       .setURL(this.anilist.siteUrl)
@@ -88,7 +88,7 @@ module.exports = class User {
 
   makeAniListProfileCompactEmbed() {
     if (this.anilist == null) return null;
-    return new Discord.MessageEmbed()
+    return new Discord.EmbedBuilder()
       .setColor(this.getAniListProfileColor())
       .setTitle(this.anilist.name)
       .setURL(this.anilist.siteUrl)
@@ -146,8 +146,7 @@ module.exports = class User {
   }
 
   static makeDiscordAvatarUrl(discordUser) {
-    const url = "https://cdn.discordapp.com/avatars/"
-    return url + discordUser + "/" + discordUser.avatar + ".png";
+    return discordUser.displayAvatarURL({ extension: "png" });
   }
 
   async saveLinkedUser() {

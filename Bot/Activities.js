@@ -39,7 +39,7 @@ module.exports = class Activities {
 
 
   makeEmbed() {
-    const embed = new Discord.MessageEmbed()
+    const embed = new Discord.EmbedBuilder()
       .setTitle("Last activities - Page " + this.index + "/14")
       .setDescription(this.makeDescription());
     return embed;
@@ -77,4 +77,3 @@ module.exports = class Activities {
     return `**${user}** ${status} ${text}${when}`
   }
 }
-  

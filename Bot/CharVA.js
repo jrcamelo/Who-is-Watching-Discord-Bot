@@ -91,10 +91,10 @@ module.exports = class CharVA {
   }
 
   async makeEmbed() {
-    const embed = new Discord.MessageEmbed()
+    const embed = new Discord.EmbedBuilder()
       .setColor('#0099ff')
       .setTitle(this.va.Staff.name.full)
-      .setAuthor(this.character.name + " - " + this.character.title)
+      .setAuthor({ name: this.character.name + " - " + this.character.title })
       .setURL(this.va.Staff.siteUrl)
       .setThumbnail(this.va.Staff.image.large)
       .setDescription(this.makeDescription())

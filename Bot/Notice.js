@@ -60,7 +60,7 @@ module.exports = class Notice {
   }
 
   makeEmbed() {
-    const embed = new Discord.MessageEmbed()
+    const embed = new Discord.EmbedBuilder()
       .setTitle("Airing soon...")
       .addFields(this.makeAnimeFields());
     return embed;

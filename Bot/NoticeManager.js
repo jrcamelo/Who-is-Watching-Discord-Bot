@@ -17,10 +17,14 @@ module.exports = class NoticeManager {
   static async executeCronjobs() {
     const jobIds = await Bot.db.getAllCronjobs();
     for (let id of jobIds) {
-      const job = await Bot.db.get(id);
-      console.log("Executing cronjob for " + job);
-      const notice = new Notice(job.guild, job.channel);
-      notice.sendMessageInChannel();
+      try {
+        const job = await Bot.db.get(id);
+        console.log("Executing cronjob for " + job);
+        const notice = new Notice(job.guild, job.channel);
+        await notice.sendMessageInChannel();
+      } catch (error) {
+        console.error(`Cronjob ${id} failed:`, error);
+      }
     }
   }
 
